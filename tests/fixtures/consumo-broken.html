@@ -1,0 +1,179 @@
+<html><head><meta charset="utf-8"></head><body>
+<form id="search-form" action="" method="get" class="head-tabella">
+                <span class="text-xls">FILTRI</span>
+                                    <div class="anno">
+                        <label class="name">Anno</label>
+
+                        <select id="id-select-anno" onchange="annoChangedJoomla()" name="ANNO">
+                            <option value="2021">2021 </option>
+                                <option value="2022">2022 </option>
+                                <option value="2023">2023 </option>
+                                <option value="2024">2024 </option>
+                                <option selected value="2025">2025 </option>
+                                <option value="2026">2026 </option>
+                                                        </select>
+                    </div>
+                                        <div class="mese">
+                        <label class="name">Mese</label>
+
+                        <select name="MESE">
+                            <option value="1">Gennaio </option>
+                                <option value="2">Febbraio </option>
+                                <option value="3">Marzo </option>
+                                <option value="4">Aprile </option>
+                                <option selected value="5">Maggio </option>
+                                <option value="6">Giugno </option>
+                                <option value="7">Luglio </option>
+                                <option value="8">Agosto </option>
+                                <option value="9">Settembre </option>
+                                <option value="10">Ottobre </option>
+                                <option value="11">Novembre </option>
+                                <option value="12">Dicembre </option>
+                                                        </select>
+                    </div>
+                                        <div class="f[provincia]">
+                        <label class="name">Provincia</label>
+
+                        <select name="f[PROVINCIA]">
+                            <option value="Alessandria">Alessandria </option>
+                                <option value="Ancona">Ancona </option>
+                                <option value="Aosta">Aosta </option>
+                                <option value="Arezzo">Arezzo </option>
+                                <option value="Ascoli Piceno">Ascoli Piceno </option>
+                                <option value="Avellino">Avellino </option>
+                                <option value="Bari">Bari </option>
+                                <option value="Belluno">Belluno </option>
+                                <option value="Benevento">Benevento </option>
+                                <option value="Bergamo">Bergamo </option>
+                                <option value="Biella">Biella </option>
+                                <option value="Bologna">Bologna </option>
+                                <option value="Bolzano">Bolzano </option>
+                                <option value="Brescia">Brescia </option>
+                                <option value="Cagliari">Cagliari </option>
+                                <option value="Catanzaro">Catanzaro </option>
+                                <option value="Cosenza">Cosenza </option>
+                                <option value="Cremona">Cremona </option>
+                                <option value="Cuneo">Cuneo </option>
+                                <option value="Ferrara">Ferrara </option>
+                                <option value="Firenze">Firenze </option>
+                                <option value="Forli">Forli </option>
+                                <option value="Genova">Genova </option>
+                                <option value="Gorizia">Gorizia </option>
+                                <option value="Grosseto">Grosseto </option>
+                                <option value="Lecco">Lecco </option>
+                                <option value="Livorno">Livorno </option>
+                                <option value="Lodi">Lodi </option>
+                                <option value="Lucca">Lucca </option>
+                                <option value="Macerata">Macerata </option>
+                                <option value="Mantova">Mantova </option>
+                                <option value="Messina">Messina </option>
+                                <option value="Milano">Milano </option>
+                                <option value="Modena">Modena </option>
+                                <option value="Napoli">Napoli </option>
+                                <option value="Novara">Novara </option>
+                                <option value="Padova">Padova </option>
+                                <option value="Palermo">Palermo </option>
+                                <option value="Parma">Parma </option>
+                                <option value="Perugia">Perugia </option>
+                                <option value="Pescara">Pescara </option>
+                                <option value="Piacenza">Piacenza </option>
+                                <option value="Pistoia">Pistoia </option>
+                                <option value="Pordenone">Pordenone </option>
+                                <option value="Ravenna">Ravenna </option>
+                                <option value="Reggio Calabria">Reggio Calabria </option>
+                                <option value="Reggio Emilia">Reggio Emilia </option>
+                                <option value="Rimini">Rimini </option>
+                                <option selected value="Roma">Roma </option>
+                                <option value="Rovigo">Rovigo </option>
+                                <option value="Sassari">Sassari </option>
+                                <option value="Siena">Siena </option>
+                                <option value="Siracusa">Siracusa </option>
+                                <option value="Terni">Terni </option>
+                                <option value="Torino">Torino </option>
+                                <option value="Trento">Trento </option>
+                                <option value="Treviso">Treviso </option>
+                                <option value="Trieste">Trieste </option>
+                                <option value="Udine">Udine </option>
+                                <option value="Varese">Varese </option>
+                                <option value="Venezia">Venezia </option>
+                                <option value="Vercelli">Vercelli </option>
+                                <option value="Verona">Verona </option>
+                                <option value="Vicenza">Vicenza </option>
+                                                        </select>
+                    </div>
+                                        <div class="f[tipo_record_mise]">
+                        <label class="name">Tipologia di Prodotto</label>
+
+                        <select name="f[TIPO_RECORD_MISE]">
+                            <option value="altri_alim">Alimentari </option>
+                                <option selected value="energia">Energetici </option>
+                                <option value="groc">Cura della persona e della casa </option>
+                                <option value="ittici">Ittici </option>
+                                <option value="orto">Ortofrutta </option>
+                                <option value="servizi">Servizi </option>
+                                                        </select>
+                    </div>
+                                    <input type="submit" id="id-button-submit" value="Applica" name="submit" class="submit-xls">
+            </form>
+<table class="table table-striped table-bordered" id="id-table-results">
+                <thead>
+                <tr>
+                                            <th>
+                            Descrizione Prodotto                        </th>
+                                                <th>
+                            Quotazione Minima                        </th>
+                                                <th>
+                            Quotazione Massima                        </th>
+                                                <th>
+                            Quotazione Mediana                        </th>
+                                                <th>
+                            Tipologia di Prodotto                        </th>
+                                        </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        							<td data-label="Descrizione Prodotto">Gasolio Per Auto Con Servizio Alla Pompa (1 L)                        </td>
+ 													<td data-label="Quotazione Minima">1.489                        </td>
+ 													<td data-label="Quotazione Massima">2.319                        </td>
+ 													<td data-label="Quotazione Mediana">1.725                        </td>
+ 													<td data-label="Tipologia di Prodotto">Energetici                        </td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="Descrizione Prodotto">Gasolio Per Auto Senza Servizio Alla Pompa (1 L)                        </td>
+ 													<td data-label="Quotazione Minima">1.485                        </td>
+ 													<td data-label="Quotazione Massima">1.999                        </td>
+ 													<td data-label="Quotazione Mediana">1.583                        </td>
+ 													<td data-label="Tipologia di Prodotto">Energetici                        </td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="Descrizione Prodotto">Benzina Verde Senza Servizio Alla Pompa (1 L)                        </td>
+ 													<td data-label="Quotazione Minima">1.591                        </td>
+ 													<td data-label="Quotazione Massima">2.099                        </td>
+ 													<td data-label="Quotazione Mediana">1.685                        </td>
+ 													<td data-label="Tipologia di Prodotto">Energetici                        </td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="Descrizione Prodotto">Benzina Verde Con Servizio Alla Pompa (1 L)                        </td>
+ 													<td data-label="Quotazione Minima">1.591                        </td>
+ 													<td data-label="Quotazione Massima">2.349                        </td>
+ 													<td data-label="Quotazione Mediana">1.827                        </td>
+ 													<td data-label="Tipologia di Prodotto">Energetici                        </td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="Descrizione Prodotto">Gas GPL (1 L)                        </td>
+ 													<td data-label="Quotazione Minima">0.666                        </td>
+ 													<td data-label="Quotazione Massima">0.899                        </td>
+ 													<td data-label="Quotazione Mediana">0.713                        </td>
+ 													<td data-label="Tipologia di Prodotto">Energetici                        </td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="Descrizione Prodotto">Gas Metano Per Autotrazione (1 Kg)                        </td>
+ 													<td data-label="Quotazione Minima">1.266                        </td>
+ 													<td data-label="Quotazione Massima">2.299                        </td>
+ 													<td data-label="Quotazione Mediana">1.534                        </td>
+ 													<td data-label="Tipologia di Prodotto">Energetici                        </td>
+ 						                    </tr>
+                                    </tbody>
+
+            </table>
+</body></html>

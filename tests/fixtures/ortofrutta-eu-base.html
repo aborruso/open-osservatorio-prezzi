@@ -1,0 +1,91 @@
+<html><head><meta charset="utf-8"></head><body>
+<form id="search-form" action="" method="get" class="head-tabella">
+                <span class="text-xls">FILTRI</span>
+                                    <div class="anno">
+                        <label class="name">Anno</label>
+
+                        <select id="id-select-anno" onchange="annoChangedJoomla()" name="ANNO">
+                            <option value="2021">2021 </option>
+                                <option value="2022">2022 </option>
+                                <option value="2023">2023 </option>
+                                <option value="2024">2024 </option>
+                                <option value="2025">2025 </option>
+                                <option selected value="2026">2026 </option>
+                                                        </select>
+                    </div>
+                                        <div class="mese">
+                        <label class="name">Mese</label>
+
+                        <select id="id-select-mese" onchange="meseChangedJoomla()" name="MESE">
+                            <option value="1">Gennaio </option>
+                                <option value="2">Febbraio </option>
+                                <option value="3">Marzo </option>
+                                <option value="4">Aprile </option>
+                                <option value="5">Maggio </option>
+                                <option value="6">Giugno </option>
+                                <option value="7">Luglio </option>
+                                <option selected value="8">Agosto </option>
+                                                        </select>
+                    </div>
+                                        <div class="settimana">
+                        <label class="name">Settimana</label>
+
+                        <select id="id-select-settimana" name="SETTIMANA">
+                            <option selected value="1">1 </option>
+                                <option value="2">2 </option>
+                                                        </select>
+                    </div>
+                                        <div class="f[mercato]">
+                        <label class="name">MERCATO</label>
+
+                        <select name="f[MERCATO]">
+                            <option selected value="AMBURGO">AMBURGO </option>
+                                <option value="BARCELLONA">BARCELLONA </option>
+                                <option value="BERLINO">BERLINO </option>
+                                <option value="BOLOGNA">BOLOGNA </option>
+                                <option value="LIONE">LIONE </option>
+                                <option value="MILANO">MILANO </option>
+                                <option value="MONACO">MONACO </option>
+                                <option value="PARIGI">PARIGI </option>
+                                <option value="PERPIGNANO">PERPIGNANO </option>
+                                <option value="ROMA">ROMA </option>
+                                <option value="STOCCARDA">STOCCARDA </option>
+                                                        </select>
+                    </div>
+                                        <div class="f[gruppo]">
+                        <label class="name">GRUPPO</label>
+
+                        <select name="f[GRUPPO]">
+                            <option selected value="AGRUMI">AGRUMI </option>
+                                <option value="FRUTTA">FRUTTA </option>
+                                <option value="ORTAGGI">ORTAGGI </option>
+                                                        </select>
+                    </div>
+                                    <input type="submit" id="id-button-submit" value="Applica" name="submit" class="submit-xls">
+            </form>
+<table class="table table-striped table-bordered" id="id-table-results">
+                <thead>
+                <tr>
+                                            <th>
+                            SPECIE                        </th>
+                                                <th>
+                            VARIETA                        </th>
+                                                <th>
+                            CALIBRO                        </th>
+                                                <th>
+                            CAT.                        </th>
+                                                <th>
+                            PRESENTAZIONE                        </th>
+                                                <th>
+                            ORIGINE                        </th>
+                                                <th>
+                            U.M.                        </th>
+                                                <th>
+                            PREZZO                        </th>
+                                        </tr>
+                </thead>
+                <tbody>
+                                </tbody>
+
+            </table>
+</body></html>

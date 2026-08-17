@@ -17,30 +17,30 @@ Verificate con sessione `agent-browser` (traffico tracciato) e replay HTTP:
 
 ## Fase 0 - Preparazione
 
-- [ ] Inizializzare il repository git e aggiungere `.gitignore` (`tmp/`, `.venv/`, cache) → verifica: `git status` pulito a parte i file sorgente.
-- [ ] Creare il progetto con `uv` (`pyproject.toml`, `src/osservaprezzi/`, dipendenze Typer, httpx, lxml, PyYAML) → verifica: `uv run osservaprezzi --version` stampa la versione.
-- [ ] Definire la configurazione centralizzata delle sorgenti (URL, dimensioni, nomi HTML, schema tabella per collezione) → verifica: test che le tre collezioni siano registrate con nomi CLI in inglese (`province`, non `provincia`, correggendo l'incoerenza del PRD).
+- [x] Inizializzare il repository git e aggiungere `.gitignore` (`tmp/`, `.venv/`, cache) → verifica: `git status` pulito a parte i file sorgente.
+- [x] Creare il progetto con `uv` (`pyproject.toml`, `src/osservaprezzi/`, dipendenze Typer, httpx, lxml, PyYAML) → verifica: `uv run osservaprezzi --version` stampa la versione.
+- [x] Definire la configurazione centralizzata delle sorgenti (URL, dimensioni, nomi HTML, schema tabella per collezione) → verifica: test che le tre collezioni siano registrate con nomi CLI in inglese (`province`, non `provincia`, correggendo l'incoerenza del PRD).
 
 ## Fase 1 - Nucleo HTTP, form e parsing
 
-- [ ] `http.py`: client httpx con user-agent `osservaprezzi/<versione>`, timeout, retry limitati con attesa progressiva e rispetto di `Retry-After`, pausa configurabile, nessun parallelismo → verifica: test con transport simulato su timeout, 429 e 5xx.
-- [ ] `forms.py`: lettura dei domini di ogni select con lxml (attributi letti per nome, mai per posizione) e lettura dell'echo dei filtri → verifica: fixture con `<option  selected='selected'  value="2025">` interpretata correttamente.
-- [ ] `parse.py`: estrazione righe da `#id-table-results`, celle vuote conservate come null, prezzi come decimali con rappresentazione originale preservata → verifica: fixture ortofrutta con `U.M.` vuota e varietà vuota.
-- [ ] `errors.py`: tassonomia errori, codici di uscita 2-6, errore JSON su `stderr` con `code`, `message`, `retryable`, `details` → verifica: test su ciascun codice.
+- [x] `http.py`: client httpx con user-agent `osservaprezzi/<versione>`, timeout, retry limitati con attesa progressiva e rispetto di `Retry-After`, pausa configurabile, nessun parallelismo → verifica: test con transport simulato su timeout, 429 e 5xx.
+- [x] `forms.py`: lettura dei domini di ogni select con lxml (attributi letti per nome, mai per posizione) e lettura dell'echo dei filtri → verifica: fixture con `<option  selected='selected'  value="2025">` interpretata correttamente.
+- [x] `parse.py`: estrazione righe da `#id-table-results`, celle vuote conservate come null, prezzi come decimali con rappresentazione originale preservata → verifica: fixture ortofrutta con `U.M.` vuota e varietà vuota.
+- [x] `errors.py`: tassonomia errori, codici di uscita 2-6, errore JSON su `stderr` con `code`, `message`, `retryable`, `details` → verifica: test su ciascun codice.
 
 ## Fase 2 - Scoperta e recupero (adattatore `consumo`)
 
-- [ ] `catalog`: elenco delle tre collezioni con descrizione e stato → verifica: test su output tabellare e JSON.
-- [ ] `describe consumo`: metadati, dimensioni, copertura temporale ricavata dai domini → verifica: test su fixture.
-- [ ] `values consumo <dimensione>` con filtri genitori passati nella GET (i mesi dipendono dall'anno) → verifica: test che `values month --year 2026` e `--year 2025` restituiscano domini diversi.
-- [ ] `get consumo`: tutti i filtri obbligatori, `--latest` esplicito per i default del sito, validazione locale sui domini, verifica dell'echo prima di leggere la tabella → verifica: fixture per risultato valido, valido vuoto e parametro non valido.
-- [ ] Renderer tabella, JSON e CSV con stessi record e stessi null, ordine stabile, `stdout` solo dati → verifica: test di equivalenza JSON/CSV e test che `--verbose` non scriva nulla su `stdout`.
-- [ ] Cache dei soli metadati con sorgente, data e scadenza; `--refresh` → verifica: test che la cache non contenga osservazioni.
+- [x] `catalog`: elenco delle tre collezioni con descrizione e stato → verifica: test su output tabellare e JSON.
+- [x] `describe consumo`: metadati, dimensioni, copertura temporale ricavata dai domini → verifica: test su fixture.
+- [x] `values consumo <dimensione>` con filtri genitori passati nella GET (i mesi dipendono dall'anno) → verifica: test che `values month --year 2026` e `--year 2025` restituiscano domini diversi.
+- [x] `get consumo`: tutti i filtri obbligatori, `--latest` esplicito per i default del sito, validazione locale sui domini, verifica dell'echo prima di leggere la tabella → verifica: fixture per risultato valido, valido vuoto e parametro non valido.
+- [x] Renderer tabella, JSON e CSV con stessi record e stessi null, ordine stabile, `stdout` solo dati → verifica: test di equivalenza JSON/CSV e test che `--verbose` non scriva nulla su `stdout`.
+- [x] Cache dei soli metadati con sorgente, data e scadenza; `--refresh` → verifica: test che la cache non contenga osservazioni.
 
 ## Fase 3 - Adattatori ortofrutticoli
 
-- [ ] `ortofrutta-it`: cinque dimensioni, schema a dieci colonne con prezzo prevalente, minimo e massimo → verifica: fixture reale e test di schema.
-- [ ] `ortofrutta-eu`: cinque dimensioni, schema a nove colonne con prezzo unico → verifica: fixture reale e test di schema.
+- [x] `ortofrutta-it`: cinque dimensioni, schema a dieci colonne con prezzo prevalente, minimo e massimo → verifica: fixture reale e test di schema.
+- [x] `ortofrutta-eu`: cinque dimensioni, schema a nove colonne con prezzo unico → verifica: fixture reale e test di schema.
 - [ ] Matrice di parità form HTML → parametro HTTP → parametro CLI per le tre collezioni → verifica: test che fallisce se una select del form non ha un parametro CLI corrispondente.
 
 ## Fase 4 - Query salvate e archivi
@@ -57,6 +57,31 @@ Verificate con sessione `agent-browser` (traffico tracciato) e replay HTTP:
 - [ ] Archivio di accettazione: 64 province, un periodo, una categoria, un prodotto, eseguito una sola volta in sequenza → verifica: `manifest.json` completo, dati deduplicati, conservato come evidenza del criterio 10.
 - [ ] `README.md` orientato ad agenti: sequenza scoperta → recupero, codici di uscita, contratto JSON → verifica: rilettura contro il criterio 9 del PRD.
 - [ ] Aggiornare `LOG.md`, `docs/evaluation.md` (assenza di paginazione, echo verificato, `submit` non necessario) e la sezione di revisione → verifica: rilettura dei dieci criteri di accettazione uno per uno.
+
+## Punto di ripresa (2026-08-17, fine sessione)
+
+Fatto e verificato:
+
+- repository git inizializzato, progetto `uv` funzionante, comando `osservaprezzi` installato;
+- moduli completati: `errors`, `collections`, `http`, `forms`, `parse`, `cache`, `client`, `render`, `query`, `archive`, `cli`;
+- comandi funzionanti su dati reali: `catalog`, `describe`, `values`, `get`, `version`, `cache`;
+- tre collezioni verificate con query reali, incluse le differenze di intestazione (`Varietà` in Italia, `VARIETA` in Europa);
+- errori verificati sul campo: parametro non ammesso (uscita 2), nessun dato (uscita 3), contratto cambiato (uscita 4);
+- fixture HTML ritagliate in `tests/fixtures/` più `scripts/refresh_fixtures.py` per rigenerarle;
+- 17 test offline verdi (`uv run pytest`).
+
+Da fare alla ripresa, in ordine:
+
+1. test di `run` (query salvata equivalente al comando `get`) e di `query.py` (versione, chiavi e filtri sconosciuti);
+2. test di parità: ogni select dei form nelle fixture deve avere un parametro CLI corrispondente;
+3. test di equivalenza JSON/CSV e di purezza di `stdout` con `--verbose`;
+4. test di `archive`: piano, `--dry-run`, `--max-requests`, manifest, deduplicazione, `--resume`, filtro locale `--product`;
+5. prova reale di `archive` con espansione ridotta (poche province) prima dell'archivio di accettazione;
+6. archivio di accettazione a 64 province, eseguito una volta sola, manifest conservato come evidenza del criterio 10;
+7. allineare `docs/evaluation.md` con le evidenze nuove (assenza di paginazione HTTP, echo verificato su tutte le dimensioni, `submit=Applica` non necessario, intestazioni diverse fra i due portali ortofrutticoli);
+8. rilettura finale dei dieci criteri di accettazione del PRD.
+
+Nota emersa in sessione: la dimensione `province` di `consumo` è provinciale, non comunale. Il portale espone 64 province di rilevazione sulle 107 italiane; i dati sono elaborati da Istat sull'indagine sui prezzi al consumo e il portale sconsiglia esplicitamente i confronti fra città e fra mesi.
 
 ## Domande irrisolte
 

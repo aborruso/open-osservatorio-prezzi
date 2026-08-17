@@ -1,0 +1,207 @@
+<html><head><meta charset="utf-8"></head><body>
+<form id="search-form" action="" method="get" class="head-tabella">
+                <span class="text-xls">FILTRI</span>
+                                    <div class="anno">
+                        <label class="name">Anno</label>
+
+                        <select id="id-select-anno" onchange="annoChangedJoomla()" name="ANNO">
+                            <option value="2021">2021 </option>
+                                <option value="2022">2022 </option>
+                                <option value="2023">2023 </option>
+                                <option value="2024">2024 </option>
+                                <option selected value="2025">2025 </option>
+                                <option value="2026">2026 </option>
+                                                        </select>
+                    </div>
+                                        <div class="mese">
+                        <label class="name">Mese</label>
+
+                        <select id="id-select-mese" onchange="meseChangedJoomla()" name="MESE">
+                            <option value="1">Gennaio </option>
+                                <option value="2">Febbraio </option>
+                                <option value="3">Marzo </option>
+                                <option value="4">Aprile </option>
+                                <option selected value="5">Maggio </option>
+                                <option value="6">Giugno </option>
+                                <option value="7">Luglio </option>
+                                <option value="8">Agosto </option>
+                                <option value="9">Settembre </option>
+                                <option value="10">Ottobre </option>
+                                <option value="11">Novembre </option>
+                                <option value="12">Dicembre </option>
+                                                        </select>
+                    </div>
+                                        <div class="settimana">
+                        <label class="name">Settimana</label>
+
+                        <select id="id-select-settimana" name="SETTIMANA">
+                            <option value="1">1 </option>
+                                <option selected value="2">2 </option>
+                                <option value="3">3 </option>
+                                <option value="4">4 </option>
+                                                        </select>
+                    </div>
+                                        <div class="f[mercato]">
+                        <label class="name">MERCATO</label>
+
+                        <select name="f[MERCATO]">
+                            <option value="AMBURGO">AMBURGO </option>
+                                <option value="BARCELLONA">BARCELLONA </option>
+                                <option value="BERLINO">BERLINO </option>
+                                <option value="BOLOGNA">BOLOGNA </option>
+                                <option value="LIONE">LIONE </option>
+                                <option value="MILANO">MILANO </option>
+                                <option value="MONACO">MONACO </option>
+                                <option selected value="PARIGI">PARIGI </option>
+                                <option value="PERPIGNANO">PERPIGNANO </option>
+                                <option value="ROMA">ROMA </option>
+                                <option value="STOCCARDA">STOCCARDA </option>
+                                                        </select>
+                    </div>
+                                        <div class="f[gruppo]">
+                        <label class="name">GRUPPO</label>
+
+                        <select name="f[GRUPPO]">
+                            <option value="AGRUMI">AGRUMI </option>
+                                <option value="FRUTTA">FRUTTA </option>
+                                <option selected value="ORTAGGI">ORTAGGI </option>
+                                                        </select>
+                    </div>
+                                    <input type="submit" id="id-button-submit" value="Applica" name="submit" class="submit-xls">
+            </form>
+<table class="table table-striped table-bordered" id="id-table-results">
+                <thead>
+                <tr>
+                                            <th>
+                            SPECIE                        </th>
+                                                <th>
+                            VARIETA                        </th>
+                                                <th>
+                            CALIBRO                        </th>
+                                                <th>
+                            CAT.                        </th>
+                                                <th>
+                            PRESENTAZIONE                        </th>
+                                                <th>
+                            ORIGINE                        </th>
+                                                <th>
+                            U.M.                        </th>
+                                                <th>
+                            PREZZO                        </th>
+                                        </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        							<td data-label="SPECIE">AGLI</td>
+ 													<td data-label="VARIETA">BIANCHI SECCHI</td>
+ 													<td data-label="CALIBRO">N.C.</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">ALLA RINFUSA</td>
+ 													<td data-label="ORIGINE">Spagna</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">5.8</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">CARCIOFI</td>
+ 													<td data-label="VARIETA">VIOLETTO SENZA SPINE</td>
+ 													<td data-label="CALIBRO">7.5-9.0 CM</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">MONOSTRATO</td>
+ 													<td data-label="ORIGINE">Francia</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">2.8</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">CAROTE</td>
+ 													<td data-label="VARIETA"></td>
+ 													<td data-label="CALIBRO">N.C.</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">ALLA RINFUSA</td>
+ 													<td data-label="ORIGINE">Francia</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">0.8</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">CAROTE</td>
+ 													<td data-label="VARIETA"></td>
+ 													<td data-label="CALIBRO">N.C.</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">ALLA RINFUSA</td>
+ 													<td data-label="ORIGINE">Spagna</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">1.4</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">CAVOLFIORE</td>
+ 													<td data-label="VARIETA">BIANCO</td>
+ 													<td data-label="CALIBRO">8 PZ.</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">MONOSTRATO</td>
+ 													<td data-label="ORIGINE">Francia</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">3.8</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">FAGIOLINI</td>
+ 													<td data-label="VARIETA">TIPO BOBY</td>
+ 													<td data-label="CALIBRO">FINI</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">ALLA RINFUSA</td>
+ 													<td data-label="ORIGINE">Marocco</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">3.2</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">FUNGHI</td>
+ 													<td data-label="VARIETA">PRATAIOLI BIANCHI</td>
+ 													<td data-label="CALIBRO">N.C.</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">MONOSTRATO</td>
+ 													<td data-label="ORIGINE">Polonia</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">3</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">LATTUGHE</td>
+ 													<td data-label="VARIETA">ICEBERG</td>
+ 													<td data-label="CALIBRO">10 PEZZI</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">MONOSTRATO</td>
+ 													<td data-label="ORIGINE">Spagna</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">1.14</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">PEPERONI</td>
+ 													<td data-label="VARIETA">QUADRATI VERDI </td>
+ 													<td data-label="CALIBRO">GG (90-110)</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">A PIU' STRATI</td>
+ 													<td data-label="ORIGINE">Paesi Bassi</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">2.2</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">PEPERONI</td>
+ 													<td data-label="VARIETA">QUADRATI ROSSI</td>
+ 													<td data-label="CALIBRO">GG (90-110)</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">A PIU' STRATI</td>
+ 													<td data-label="ORIGINE">Paesi Bassi</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">1.8</td>
+ 						                    </tr>
+                                        <tr>
+                        							<td data-label="SPECIE">SPINACI</td>
+ 													<td data-label="VARIETA">RICCI</td>
+ 													<td data-label="CALIBRO">N.C.</td>
+ 													<td data-label="CAT.">I</td>
+ 													<td data-label="PRESENTAZIONE">ALLA RINFUSA</td>
+ 													<td data-label="ORIGINE">Francia</td>
+ 													<td data-label="U.M."></td>
+ 													<td data-label="PREZZO">1.7</td>
+ 						                    </tr>
+                                    </tbody>
+
+            </table>
+</body></html>
