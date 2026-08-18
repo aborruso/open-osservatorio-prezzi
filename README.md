@@ -319,6 +319,8 @@ osservaprezzi agent-context
 
 Se lavori con Claude, Copilot o simili, il file [`AGENTS.md`](AGENTS.md) contiene le istruzioni da dare all'assistente.
 
+Nel repository c'è anche una **[Agent Skill](skills/osservaprezzi/)** conforme alla [specifica agentskills.io](https://agentskills.io/specification.md): copiala in `~/.claude/skills/` e l'assistente saprà quando usare questi dati, come interrogarli e — soprattutto — quali confronti reggono e quali no.
+
 ## Fonte e licenza
 
 I dati provengono dall'Osservatorio Prezzi del MIMIT, che li elabora a partire da rilevazioni Istat, Unioncamere e BMTI. Cita sempre la fonte e l'indirizzo della pagina: li trovi in ogni riga esportata.
