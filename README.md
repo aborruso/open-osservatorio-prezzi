@@ -263,7 +263,7 @@ Sono due strumenti con due mestieri: i **livelli** dicono quanto si paga qui e o
 
 ### Perché allora esistono
 
-Questi livelli sono un sottoprodotto pubblicato dell'indagine Istat sui prezzi al consumo: gli stessi dati che alimentano gli indici, diffusi anche in forma grezza per trasparenza. Servono inoltre alla sorveglianza dei prezzi — individuare situazioni anomale, alimentare il lavoro del Garante e delle commissioni di allerta rapida — dove basta un ordine di grandezza pubblico e verificabile.
+Questi livelli nascono dalla stessa raccolta che alimenta gli indici dei prezzi al consumo, ma non sono dati grezzi: sono elaborazioni. Per la rilevazione tradizionale e le fonti amministrative il portale pubblica il prezzo minimo e massimo effettivamente rilevati e la media delle quotazioni validate; per i dati degli scanner di cassa il minimo e il massimo fra i prezzi medi mensili di ciascun codice a barre, e una media provinciale ponderata sul peso campionario dei punti vendita. Le singole quotazioni per punto vendita non sono pubbliche. Servono inoltre alla sorveglianza dei prezzi — individuare situazioni anomale, alimentare il lavoro del Garante e delle commissioni di allerta rapida — dove basta un ordine di grandezza pubblico e verificabile.
 
 ### In breve
 

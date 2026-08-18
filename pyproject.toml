@@ -21,6 +21,12 @@ dependencies = [
     "portalocker>=4.1.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/aborruso/open-osservatorio-prezzi"
+Source = "https://github.com/aborruso/open-osservatorio-prezzi"
+Issues = "https://github.com/aborruso/open-osservatorio-prezzi/issues"
+Changelog = "https://github.com/aborruso/open-osservatorio-prezzi/blob/main/CHANGELOG.md"
+
 [project.scripts]
 osservaprezzi = "osservaprezzi.cli:main"
 
