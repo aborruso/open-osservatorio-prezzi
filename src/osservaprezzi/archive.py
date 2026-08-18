@@ -19,6 +19,16 @@ from .render import to_csv
 DEFAULT_MAX_REQUESTS = 100
 MANIFEST_NAME = "manifest.json"
 
+# Espandere il tempo è l'unico modo per costruire, con dati che non lo
+# sostengono, una serie storica dall'aria convincente. Non lo impediamo — ci
+# sono usi legittimi, e comunque le stesse pagine sono scaricabili a mano — ma
+# l'avvertenza deve raggiungere chi sta per farlo, non restare nel manifest che
+# si legge dopo. E deve arrivare insieme all'alternativa: dire soltanto «non si
+# fa» lascia il problema irrisolto e la richiesta viene soddisfatta comunque.
+TEMPORAL_DIMENSIONS = ("year", "month", "week")
+
+NIC_PROVINCIALE = "167_744_DF_DCSP_NIC1B2015_1"
+
 
 def normalize_product(text: str) -> str:
     """Normalizzazione documentata per il confronto locale del prodotto."""
@@ -111,6 +121,59 @@ def build_plan(
         combinations=combos,
         product=product,
     )
+
+
+def temporal_expansion(collection: Collection, plan: "Plan") -> dict[str, Any] | None:
+    """Descrive l'espansione temporale di un piano, se merita un avvertimento.
+
+    Riguarda solo le collezioni che dichiarano una nota di comparabilità: per
+    l'ortofrutta all'ingrosso, dove specie, varietà e calibro sono colonne
+    esplicite, confrontare settimane diverse è molto meno insidioso.
+    """
+    if not collection.notes:
+        return None
+    espanse = {d: v for d, v in plan.expanded.items() if d in TEMPORAL_DIMENSIONS}
+    if not espanse:
+        return None
+    periodi = 1
+    for valori in espanse.values():
+        periodi *= len(valori)
+    return {
+        "dimensions": sorted(espanse),
+        "periods": periodi,
+        "comparability": "not_recommended",
+        "reason": (
+            "Fra un periodo e l'altro cambiano le referenze campionate: una "
+            "variazione fra questi livelli mescola il rincaro reale con il "
+            "cambio di paniere."
+        ),
+        "use_instead": alternativa_indici(plan.filters.get("province")),
+    }
+
+
+def alternativa_indici(province: str | None) -> dict[str, str]:
+    """Il comando che risponde davvero alla domanda sull'andamento nel tempo."""
+    from .territori import codici
+
+    nuts3 = codici(province or "").get("province_nuts3")
+    comando = (
+        f"opensdmx get {NIC_PROVINCIALE} --provider istat --FREQ M "
+        f"--REF_AREA {nuts3 or '<codice NUTS3>'} --DATA_TYPE 39 --MEASURE 4 "
+        "--E_COICOP_REV_ISTAT 00"
+    )
+    return {
+        "source": "Indici dei prezzi al consumo ISTAT (NIC), via SDMX",
+        "dataflow": NIC_PROVINCIALE,
+        "command": comando,
+        "note": (
+            "Gli indici confrontano ogni prodotto con se stesso, quindi "
+            "l'andamento nel tempo è confrontabile; in cambio danno la "
+            "variazione e non il prezzo in euro. Il dettaglio provinciale si "
+            "ferma alle divisioni merceologiche: usa "
+            f"`opensdmx constraints {NIC_PROVINCIALE} E_COICOP_REV_ISTAT "
+            "--provider istat` per scegliere la voce."
+        ),
+    }
 
 
 @dataclass
@@ -223,6 +286,7 @@ def run_archive(
         "row_count": len(records),
         "results": list(done.values()),
         "notes": list(collection.notes),
+        "temporal_expansion": temporal_expansion(collection, plan),
         "source": collection.url,
     }
     _write_manifest(manifest_path, manifest)

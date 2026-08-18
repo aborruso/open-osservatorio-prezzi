@@ -201,6 +201,21 @@ Se l'esecuzione si interrompe, riprende da dove era rimasta:
 osservaprezzi archive … --output pane-maggio-2025 --resume
 ```
 
+### Se espandi i mesi, lo strumento ti avvisa
+
+Espandere la dimensione temporale è tecnicamente possibile e a volte utile — per sapere in quali mesi un prodotto è stato rilevato, per esempio. Ma è anche il modo più rapido per costruire una serie storica che i dati non sostengono, quindi la CLI te lo dice prima di partire:
+
+```
+attenzione: stai espandendo la dimensione temporale (month, 12 periodi).
+  Fra un periodo e l'altro cambiano le referenze campionate: una variazione fra
+  questi livelli mescola il rincaro reale con il cambio di paniere.
+  Per l'andamento nel tempo la fonte corretta sono gli indici ISTAT:
+    opensdmx get 167_744_DF_DCSP_NIC1B2015_1 --provider istat --FREQ M
+      --REF_AREA ITG12 --DATA_TYPE 39 --MEASURE 4 --E_COICOP_REV_ISTAT 00
+```
+
+Il comando suggerito è già pronto, con il codice territoriale della provincia che hai chiesto. Nessun blocco: l'archivio parte lo stesso, e nel `manifest.json` resta scritto sotto `temporal_expansion` che quella serie non è comparabile — così l'avvertenza viaggia insieme ai dati anche se il CSV finisce in altre mani.
+
 Puoi espandere anche altre dimensioni — tutti i mercati per una settimana, per esempio:
 
 ```bash

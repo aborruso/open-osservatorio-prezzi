@@ -20,7 +20,12 @@ import typer
 from . import SCHEMA_VERSION, __version__
 from . import errors as err
 from . import render
-from .archive import DEFAULT_MAX_REQUESTS, build_plan, run_archive
+from .archive import (
+    DEFAULT_MAX_REQUESTS,
+    build_plan,
+    run_archive,
+    temporal_expansion,
+)
 from .cache import MetadataCache
 from .client import Client
 from .collections import COLLECTIONS, Collection, get_collection
@@ -121,6 +126,18 @@ def _collect_filters(collection: Collection, provided: dict[str, Any]) -> dict[s
 
 
 PROVENANCE_FIELDS = ("collection", "source_url", "retrieved_at", "defaults_used")
+
+
+def _avvisa_espansione_temporale(avviso: dict[str, Any]) -> None:
+    """Segnala su stderr che si sta costruendo una serie non comparabile."""
+    dimensioni = ", ".join(avviso["dimensions"])
+    print(
+        f"\nattenzione: stai espandendo la dimensione temporale ({dimensioni}, "
+        f"{avviso['periods']} periodi).\n  {avviso['reason']}\n"
+        f"  Per l'andamento nel tempo la fonte corretta sono gli indici ISTAT:\n"
+        f"    {avviso['use_instead']['command']}\n",
+        file=sys.stderr,
+    )
 
 
 def _emit(
@@ -567,6 +584,12 @@ def archive(
                 hint="riduci le dimensioni espanse oppure alza --max-requests consapevolmente",
             )
 
+        # L'avvertenza va data prima dell'esecuzione, quando può ancora
+        # cambiare la decisione, e su stderr per non contaminare i dati.
+        avviso = temporal_expansion(collection, plan)
+        if avviso and not json_output:
+            _avvisa_espansione_temporale(avviso)
+
         if dry_run:
             payload = {
                 "schema_version": SCHEMA_VERSION,
@@ -574,6 +597,7 @@ def archive(
                 "max_requests": max_requests,
                 "pause_seconds": pause,
                 "notes": list(collection.notes),
+                "temporal_expansion": avviso,
             }
             if json_output:
                 render.write(render.to_json(payload), output=None)
@@ -610,6 +634,9 @@ def archive(
         "rows": result.row_count,
         "requests": result.manifest["requests"],
         "manifest": str(result.directory / "manifest.json"),
+        # Anche chi esegue in modalità agente deve trovare l'avvertenza nel
+        # risultato, non solo nel manifest.
+        "temporal_expansion": result.manifest.get("temporal_expansion"),
     }
     if json_output:
         render.write(render.to_json(summary), output=None)

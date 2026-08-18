@@ -9,6 +9,7 @@ Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/); le ve
 - Codici territoriali ISTAT in ogni record di `consumo`: `province_istat` (codice provincia storico), `province_uts` (unità territoriale sovracomunale) e `province_nuts3`. Le quindici città metropolitane hanno codice provincia e codice UTS diversi — Roma è `058` e `258` — quindi sono esposti entrambi per non rompere in silenzio i join.
 - Tabella di corrispondenza in `src/osservaprezzi/data/province_istat.csv`, generata dal SITUAS ISTAT con `scripts/refresh_province_istat.py`, documentata in `references/README.md`.
 - Agent Skill in `skills/osservaprezzi/`, conforme alla specifica agentskills.io.
+- Avvertenza contestuale quando un archivio espande la dimensione temporale su `consumo`: compare su `stderr` prima dell'esecuzione, insieme al comando `opensdmx` che interroga gli indici ISTAT per la stessa provincia, e resta registrata nel manifest sotto `temporal_expansion`. Non blocca nulla: espandere i mesi resta possibile, ma non più inconsapevole.
 
 ### Modificato
 

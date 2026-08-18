@@ -160,3 +160,50 @@ def test_ripresa_ripete_solo_le_richieste_fallite(tmp_path):
 
 def test_normalizzazione_prodotto():
     assert normalize_product("  Pane   FRESCO ") == "pane fresco"
+
+
+def test_espandere_i_mesi_segnala_la_non_comparabilita(client):
+    from osservaprezzi.archive import temporal_expansion
+
+    plan = build_plan(
+        client,
+        CONSUMO,
+        {"year": "2025", "province": "Roma", "category": "altri_alim"},
+        ["month"],
+    )
+    avviso = temporal_expansion(CONSUMO, plan)
+    assert avviso is not None
+    assert avviso["dimensions"] == ["month"]
+    assert avviso["comparability"] == "not_recommended"
+    # L'alternativa è un comando eseguibile, con il territorio già risolto.
+    assert "ITI43" in avviso["use_instead"]["command"]
+    assert "opensdmx" in avviso["use_instead"]["command"]
+
+
+def test_espandere_le_province_non_produce_avvertenze(client):
+    from osservaprezzi.archive import temporal_expansion
+
+    plan = build_plan(client, CONSUMO, FILTRI, ["province"])
+    assert temporal_expansion(CONSUMO, plan) is None
+
+
+def test_l_ortofrutta_non_eredita_l_avvertenza_temporale(client, tmp_path):
+    """Lì specie, varietà e calibro sono espliciti: le settimane sono confrontabili."""
+    from osservaprezzi.archive import temporal_expansion
+    from osservaprezzi.collections import ORTOFRUTTA_IT
+
+    class PianoFinto:
+        expanded = {"week": ["1", "2"]}
+        filters: dict = {}
+
+    assert temporal_expansion(ORTOFRUTTA_IT, PianoFinto()) is None
+
+
+def test_il_manifest_registra_l_espansione_temporale(client, tmp_path):
+    plan = build_plan(
+        client, CONSUMO, {"year": "2025", "province": "Roma"}, ["month", "category"]
+    )
+    result = run_archive(client, CONSUMO, plan, tmp_path / "serie")
+    registrato = result.manifest["temporal_expansion"]
+    assert registrato["periods"] == len(plan.expanded["month"])
+    assert "indici" in registrato["use_instead"]["source"].lower()

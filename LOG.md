@@ -2,6 +2,7 @@
 
 ## 2026-08-18
 
+- `archive` avverte quando si espande il tempo su `consumo` e propone il comando `opensdmx` sugli indici ISTAT, con il codice NUTS3 della provincia già risolto; l'avvertenza è anche nel manifest. Nasce da un difetto osservato nei test della skill: un agente aveva prodotto variazioni anno su anno e suggerito `archive` sui mesi per farne una serie storica.
 - Aggiunti i codici territoriali ISTAT ai record di `consumo`, ricavati dal SITUAS con `opensituas`: schema di output alla versione 2, pacchetto alla 0.2.0.
 - Scoperto che le quindici città metropolitane hanno codice provincia storico e codice UTS diversi (Roma 058 e 258): esposti entrambi, perché un join che perde Roma e Milano non dà errore, dà solo risultati incompleti.
 - README: installazione della skill con `npx skills add` (verificata sul repo pubblico) e regola generale per l'uso agentico, cioè leggere `agent-context` e gli `--help` prima di costruire comandi.
