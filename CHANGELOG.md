@@ -2,6 +2,12 @@
 
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/); le versioni seguono il [versionamento semantico](https://semver.org/lang/it/).
 
+## [0.3.0] — 2026-08-18
+
+### Aggiunto
+
+- `--province` accetta anche gli identificatori territoriali standard: codice provincia (`058` o `58`), codice dell'unità territoriale (`258`), NUTS3 (`ITI43`), sigla automobilistica (`RM`) e denominazione ufficiale ISTAT. La traduzione avviene nel client, quindi vale per `get`, per le query YAML e per gli archivi. Un codice che non corrisponde a nulla è un errore locale, senza interrogare il portale.
+
 ## [0.2.0] — 2026-08-18
 
 ### Aggiunto

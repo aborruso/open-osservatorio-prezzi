@@ -49,6 +49,43 @@ def codici(provincia: str) -> dict[str, str | None]:
     }
 
 
+def risolvi(valore: str) -> str | None:
+    """Traduce un identificatore territoriale nel nome usato dal portale.
+
+    Chi arriva da un dataset ISTAT ha in mano un codice, non il nome: accettare
+    `082`, `282`, `ITG12` o `PA` al posto di `Palermo` evita di dover costruire
+    una tabella di conversione prima di poter interrogare i prezzi. I nomi non
+    possono collidere con i codici, quindi non c'è ambiguità da sciogliere.
+    """
+    testo = valore.strip()
+    if not testo:
+        return None
+    tabella = _tabella()
+    if testo in tabella:
+        return testo
+
+    confronto = testo.upper()
+    numerico = confronto.zfill(3) if confronto.isdigit() else None
+    for nome, riga in tabella.items():
+        if confronto == riga["nuts3"].upper() or confronto == riga["plate"].upper():
+            return nome
+        if numerico and numerico in (riga["istat_code"], riga["uts_code"]):
+            return nome
+        if confronto == riga["istat_name"].upper():
+            return nome
+    return None
+
+
+def sembra_un_codice(valore: str) -> bool:
+    """Vero per input che non sono nomi di provincia ma identificatori."""
+    testo = valore.strip()
+    return bool(testo) and (
+        testo.isdigit()
+        or (len(testo) == 2 and testo.isalpha())
+        or (len(testo) == 5 and testo[:2].upper() == "IT" and testo[2:].isalnum())
+    )
+
+
 def scheda(provincia: str) -> dict[str, str] | None:
     """Tutti i dati territoriali disponibili per una provincia."""
     riga = _tabella().get(provincia)

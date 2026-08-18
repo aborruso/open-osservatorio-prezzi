@@ -52,7 +52,11 @@ H_WEEK = (
     "Settimana del mese. Solo ortofrutta-it e ortofrutta-eu. "
     "Il dominio dipende da --year e --month."
 )
-H_PROVINCE = "Provincia di rilevazione. Solo consumo."
+H_PROVINCE = (
+    "Provincia di rilevazione. Solo consumo. Accetta il nome (Roma), il codice "
+    "ISTAT (058), quello dell'unità territoriale (258), il NUTS3 (ITI43) o la "
+    "sigla (RM)."
+)
 H_CATEGORY = "Tipologia di prodotto. Solo consumo."
 H_MARKET = "Mercato all'ingrosso. Solo ortofrutta-it e ortofrutta-eu."
 H_GROUP = "Gruppo merceologico. Solo ortofrutta-it e ortofrutta-eu."

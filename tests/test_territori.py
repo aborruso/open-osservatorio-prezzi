@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from osservaprezzi.collections import CONSUMO, ORTOFRUTTA_IT
 from osservaprezzi.territori import codici, province_note, scheda
 
@@ -74,3 +76,47 @@ def test_le_collezioni_ortofrutticole_non_hanno_codici_territoriali(client):
 
 def test_la_tabella_copre_le_64_province():
     assert len(province_note()) == 64
+
+
+def test_una_provincia_si_indica_anche_col_codice():
+    """Chi arriva da un dataset ISTAT ha il codice, non il nome."""
+    from osservaprezzi.territori import risolvi
+
+    for identificatore in ("Palermo", "082", "82", "282", "ITG12", "itg12", "PA"):
+        assert risolvi(identificatore) == "Palermo", identificatore
+    # Anche la denominazione ufficiale, che sul portale è scritta diversamente.
+    assert risolvi("Reggio nell'Emilia") == "Reggio Emilia"
+    assert risolvi("Forlì-Cesena") == "Forli"
+
+
+def test_il_client_accetta_i_codici_nei_filtri(client):
+    from osservaprezzi.client import Client
+
+    normalizzati = Client.normalizza(CONSUMO, {**FILTRI, "province": "ITI43"})
+    assert normalizzati["province"] == "Roma"
+    # Il resto dei filtri non viene toccato.
+    assert normalizzati["category"] == FILTRI["category"]
+
+
+def test_un_codice_inesistente_e_un_errore_esplicito():
+    from osservaprezzi.client import Client
+    from osservaprezzi.errors import InvalidParameter
+
+    with pytest.raises(InvalidParameter) as info:
+        Client.normalizza(CONSUMO, {**FILTRI, "province": "999"})
+    assert "999" in info.value.message
+    assert "NUTS3" in info.value.details["hint"]
+
+
+def test_un_nome_sconosciuto_lo_rifiuta_il_portale():
+    """Non è un codice: lasciamo che sia il portale a elencare i valori validi."""
+    from osservaprezzi.client import Client
+
+    assert Client.normalizza(CONSUMO, {**FILTRI, "province": "Atlantide"})["province"] == "Atlantide"
+
+
+def test_le_collezioni_senza_province_non_vengono_toccate():
+    from osservaprezzi.client import Client
+
+    filtri = {"year": "2025", "month": "5", "week": "2", "market": "ROMA", "group": "ORTAGGI"}
+    assert Client.normalizza(ORTOFRUTTA_IT, filtri) == filtri

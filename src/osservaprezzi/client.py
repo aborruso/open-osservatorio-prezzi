@@ -16,6 +16,7 @@ from .errors import ContractChanged, InvalidDimension, InvalidParameter, NoData
 from .forms import Option, Select, check_echo, parse_document, parse_form
 from .http import Fetcher
 from .parse import parse_table
+from . import territori
 from .territori import codici
 
 
@@ -161,9 +162,39 @@ class Client:
 
     # -- recupero ----------------------------------------------------------
 
+    @staticmethod
+    def normalizza(collection: Collection, filters: dict[str, str]) -> dict[str, str]:
+        """Accetta identificatori territoriali standard al posto del nome.
+
+        Chi arriva da un dataset ISTAT ha in mano `082`, `ITG12` o `PA`, non
+        «Palermo»: tradurre qui evita che debba costruirsi una tabella di
+        conversione prima di poter chiedere un prezzo. Vale per `get`, per le
+        query salvate e per gli archivi, perché passano tutti di qui.
+        """
+        if not collection.derived or "province" not in filters:
+            return filters
+        valore = str(filters["province"])
+        risolto = territori.risolvi(valore)
+        if risolto:
+            return {**filters, "province": risolto}
+        if territori.sembra_un_codice(valore):
+            raise InvalidParameter(
+                f"nessuna provincia di rilevazione corrisponde a {valore!r}",
+                parameter="province",
+                value=valore,
+                hint=(
+                    "sono ammessi il nome del portale, il codice ISTAT (058), "
+                    "quello dell'unità territoriale (258), il NUTS3 (ITI43) o la "
+                    "sigla (RM); l'elenco è in `osservaprezzi values consumo province`"
+                ),
+            )
+        # Un nome sconosciuto lo rifiuta il portale, restituendo i valori ammessi.
+        return filters
+
     def get(
         self, collection: Collection, filters: dict[str, str], limit: int | None = None
     ) -> QueryResult:
+        filters = self.normalizza(collection, filters)
         missing = [d for d in collection.dimension_names if d not in filters]
         if missing:
             raise InvalidParameter(

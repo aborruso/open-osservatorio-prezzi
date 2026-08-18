@@ -74,6 +74,7 @@ def build_plan(
     expand: list[str],
     product: str | None = None,
 ) -> Plan:
+    filters = client.normalizza(collection, filters)
     for name in expand:
         if collection.dimension(name) is None:
             raise InvalidParameter(

@@ -11,13 +11,15 @@ description: >-
   dati dell'Osservatorio Prezzi, Osservaprezzi, Mister Prezzi e MIMIT — anche
   quando l'utente non nomina la CLI e chiede solo «quanto costa X a Y» oppure
   «confronta i prezzi di Z». Usala anche per costruire archivi CSV su tutte le
-  province o su tutti i mercati. Non usarla per serie storiche o andamento
-  dell'inflazione nel tempo, che sono indici ISTAT e si prendono via SDMX.
+  province o su tutti i mercati, e quando servono prezzi incrociabili con altre
+  fonti territoriali, perché ogni record porta i codici ISTAT e NUTS3 della
+  provincia. Non usarla per serie storiche o per l'andamento dell'inflazione,
+  che sono indici ISTAT e si prendono via SDMX.
 license: MIT
-compatibility: Richiede la CLI `osservaprezzi` (pacchetto PyPI `openosservaprezzi`) e accesso a osservaprezzi.mise.gov.it
+compatibility: Richiede la CLI `osservaprezzi` 0.3.0 o successiva (pacchetto PyPI `openosservaprezzi`) e accesso a osservaprezzi.mise.gov.it
 metadata:
   author: aborruso
-  version: "1.0"
+  version: "1.1"
   repository: https://github.com/aborruso/open-osservatorio-prezzi
 allowed-tools: Bash(osservaprezzi:*) Bash(uvx:*) Bash(jq:*) Read
 ---
@@ -58,6 +60,14 @@ Aggiungi `--agent` a qualunque comando per ottenere JSON senza colori né intera
 | `ortofrutta-eu` | quotazioni settimanali, 11 mercati europei, prezzo unico | `--year --month --week --market --group` |
 
 Copertura dal 2021. Le categorie di `consumo` sono sei: `altri_alim` (alimentari), `energia` (carburanti), `groc` (cura persona e casa), `ittici`, `orto` (ortofrutta), `servizi`.
+
+## I record di `consumo` sono già incrociabili
+
+Ogni riga porta con sé tre codifiche territoriali che il portale non espone, aggiunte dalla CLI: `province_istat` (codice provincia classico, Roma `058`), `province_uts` (unità territoriale sovracomunale, che per le quindici città metropolitane è diverso — Roma `258`) e `province_nuts3` (`ITI43`).
+
+Funziona anche al contrario: `--province` accetta il codice al posto del nome, quindi `082`, `ITG12`, `PA` e `Palermo` chiedono la stessa provincia. Se l'utente ti dà un codice, passalo direttamente invece di convertirlo a mano.
+
+Servono per unire questi prezzi ad altre fonti — popolazione, redditi, confini, dataflow SDMX — senza costruire a mano una tabella di conversione. Quando riporti un join, usa il codice giusto per la fonte di destinazione: se una provincia grande risulta senza corrispondenza, quasi sempre è perché stai usando l'una al posto dell'altra. Per i mercati ortofrutticoli questi campi non esistono, perché un mercato non è un'unità amministrativa e nessun codice viene inventato.
 
 ## Il percorso: scoprire prima di chiedere
 
