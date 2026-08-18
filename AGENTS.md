@@ -8,7 +8,7 @@
 osservaprezzi agent-context
 ```
 
-Restituisce in una sola chiamata l'intero contratto: collezioni, dimensioni con le loro dipendenze, comandi con un esempio ciascuno, codici di uscita, forma degli errori e garanzie. Non dedurre queste informazioni dall'help testuale: chiedile qui.
+Restituisce in una sola chiamata l'intero contratto: collezioni, dimensioni con le loro dipendenze, comandi con un esempio ciascuno, codici di uscita, forma degli errori e garanzie. Chiedi qui, invece di dedurre: se hai un dubbio su un comando specifico, `osservaprezzi <comando> --help` ha esempi eseguibili e dichiara a quale collezione appartiene ogni opzione. Costruire comandi a memoria è il modo più rapido per inventare opzioni che non esistono.
 
 ## Modalità agente
 

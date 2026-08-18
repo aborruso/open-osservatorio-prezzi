@@ -319,7 +319,23 @@ osservaprezzi agent-context
 
 Se lavori con Claude, Copilot o simili, il file [`AGENTS.md`](AGENTS.md) contiene le istruzioni da dare all'assistente.
 
-Nel repository c'è anche una **[Agent Skill](skills/osservaprezzi/)** conforme alla [specifica agentskills.io](https://agentskills.io/specification.md): copiala in `~/.claude/skills/` e l'assistente saprà quando usare questi dati, come interrogarli e — soprattutto — quali confronti reggono e quali no.
+### Regola generale, con qualsiasi assistente
+
+Prima di lasciargli costruire comandi, **chiedigli di leggere l'aiuto della CLI**. È il modo più semplice per evitare che inventi opzioni o valori:
+
+> «Prima di eseguire qualsiasi cosa, lancia `osservaprezzi agent-context` e `osservaprezzi <comando> --help`, poi usa solo le opzioni e i valori che trovi lì.»
+
+`agent-context` restituisce in una sola chiamata collezioni, dimensioni con le loro dipendenze, comandi con esempi, codici di uscita e forma degli errori. Ogni comando ha inoltre esempi eseguibili nel proprio `--help`, e ogni opzione dichiara a quale collezione appartiene. Vale anche quando la CLI verrà aggiornata: l'aiuto cambia con lei, un prompt scritto a mano no.
+
+### La Agent Skill
+
+Nel repository c'è una **[Agent Skill](skills/osservaprezzi/)** conforme alla [specifica agentskills.io](https://agentskills.io/specification.md). Installarla significa che l'assistente sa da solo quando usare questi dati, come interrogarli e — soprattutto — quali confronti reggono e quali no.
+
+```bash
+npx skills add aborruso/open-osservatorio-prezzi
+```
+
+Aggiungi `-g` per installarla a livello utente invece che nel progetto corrente, e `--list` per vedere cosa contiene senza installare nulla. In alternativa basta copiare la cartella `skills/osservaprezzi/` in `~/.claude/skills/`.
 
 ## Fonte e licenza
 

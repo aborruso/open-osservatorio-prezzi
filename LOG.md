@@ -2,6 +2,7 @@
 
 ## 2026-08-18
 
+- README: installazione della skill con `npx skills add` (verificata sul repo pubblico) e regola generale per l'uso agentico, cioè leggere `agent-context` e gli `--help` prima di costruire comandi.
 - Aggiunta la Agent Skill `skills/osservaprezzi/` conforme alla specifica agentskills.io: SKILL.md più riferimenti su comandi e interpretazione dei dati. Validata con `skills-ref` e provata comando per comando.
 - README: aggiunta la sezione sul valore dei dati, con il confronto fra pane (referenze eterogenee) e benzina (prodotto omogeneo) e la tabella delle analisi che reggono.
 - Aggiunti al PRD due principi fondativi: l'aiuto come contratto e l'accesso serializzato al servizio pubblico (RF-27…RF-38).
