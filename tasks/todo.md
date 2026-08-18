@@ -126,6 +126,13 @@ Aggiunti al PRD due principi fondativi con i relativi requisiti verificabili (RF
 - [x] Licenza MIT nel repository, come `opensdmx`.
 - [x] README riscritto per chi analizza i dati, con installazione `uv`/`uvx`/`pip` e output reali.
 
+Rilievi chiusi dopo la revisione:
+
+- `OSSERVAPREZZI_NO_LOCK=1` disattivava anche l'intervallo minimo, non solo la serializzazione: una variabile d'ambiente bastava a far partire 64 richieste a raffica. Ora il ritmo vale sempre, il lock è l'unica cosa che si può togliere.
+- Nessun test collegava il `Fetcher` al gate: rimuovendo lo slot dal codice la suite restava verde. Aggiunti due test sul collegamento, compreso il caso dei tentativi ripetuti, che devono restare dentro un solo slot.
+- RF-33 e RF-34 dicevano «una sola esecuzione per volta» mentre il lock è per richiesta: riformulati per descrivere la garanzia reale, cioè due esecuzioni che si alternano senza sommare traffico.
+- `agent-context` non accettava `--agent`, proprio il comando che gli agenti incontrano per primo.
+
 Verifica sul campo: due esecuzioni lanciate in parallelo hanno prodotto una sola richiesta per volta, con la seconda che ha atteso un secondo e lo ha dichiarato su `stderr`.
 
 ## Domande irrisolte

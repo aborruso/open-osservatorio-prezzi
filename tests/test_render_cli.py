@@ -352,6 +352,13 @@ def test_get_in_tabella_nasconde_la_provenienza():
     assert intestazione.startswith("year")
 
 
+@pytest.mark.parametrize("opzioni", [[], ["--agent"], ["--json"], ["--pretty"]])
+def test_agent_context_accetta_le_opzioni_degli_altri_comandi(opzioni):
+    result = runner.invoke(cli_module.app, ["agent-context", *opzioni])
+    assert result.exit_code == 0
+    assert json.loads(result.stdout)["tool"] == "osservaprezzi"
+
+
 def test_agent_context_descrive_il_contratto():
     result = runner.invoke(cli_module.app, ["agent-context"])
     assert result.exit_code == 0
@@ -392,7 +399,15 @@ def test_agent_produce_errori_json():
 
 
 def test_ogni_comando_ha_esempi_nell_help():
-    for comando in ["catalog", "describe", "values", "get", "run", "archive"]:
+    for comando in [
+        "catalog",
+        "describe",
+        "values",
+        "get",
+        "run",
+        "archive",
+        "agent-context",
+    ]:
         result = runner.invoke(cli_module.app, [comando, "--help"])
         assert "osservaprezzi" in result.stdout, comando
         assert "Esempi" in result.stdout, comando

@@ -78,8 +78,8 @@ La sequenzialità interna a un archivio non basta, perché non governa ciò che 
 
 Ne discendono requisiti verificabili:
 
-- **RF-33:** una sola esecuzione per volta può interrogare il portale sulla stessa macchina; il vincolo è imposto da un lock su file, non dalla cooperazione fra processi.
-- **RF-34:** una seconda esecuzione attende il rilascio dello slot anziché fallire, e segnala l'attesa su `stderr`.
+- **RF-33:** una sola richiesta per volta raggiunge il portale dalla stessa macchina; il vincolo è imposto da un lock su file attorno a ogni richiesta, non dalla cooperazione fra processi. Due esecuzioni concorrenti si alternano richiesta per richiesta e non sommano il proprio traffico: la frequenza complessiva resta quella di una sola esecuzione.
+- **RF-34:** un'esecuzione che trova lo slot occupato attende il proprio turno anziché fallire, e segnala l'attesa su `stderr`. Il turno è per richiesta e non per esecuzione, così un archivio lungo non impedisce una singola interrogazione di intercalarsi.
 - **RF-35:** l'attesa è limitata da `--lock-timeout`, oltre il quale l'esecuzione termina con errore `service_unavailable` e uscita 5, mai proseguendo in parallelo.
 - **RF-36:** fra due richieste consecutive è rispettato un intervallo minimo condiviso fra processi, misurato da invio a invio; `--pause` può alzarlo, non abbassarlo sotto il minimo.
 - **RF-37:** la terminazione anomala di un processo libera lo slot, perché il lock è mantenuto dal sistema operativo e non da uno stato applicativo.

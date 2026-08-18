@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import multiprocessing
 import time
+from contextlib import contextmanager
 
 import pytest
 
@@ -80,8 +81,9 @@ def test_intervallo_minimo_fra_richieste_consecutive():
 
 
 def test_il_lock_puo_essere_disattivato(monkeypatch):
+    """Senza lock non si attende un altro processo, ma il file non nasce."""
     monkeypatch.setenv("OSSERVAPREZZI_NO_LOCK", "1")
-    gate = RequestGate(min_interval=5)
+    gate = RequestGate(min_interval=0)
     inizio = time.time()
     with gate.slot():
         pass
@@ -89,3 +91,66 @@ def test_il_lock_puo_essere_disattivato(monkeypatch):
         pass
     assert time.time() - inizio < 0.5
     assert not lock_path().exists()
+
+
+def test_disattivare_il_lock_non_toglie_l_intervallo(monkeypatch):
+    """La variabile d'ambiente rimuove la serializzazione, non il ritmo."""
+    monkeypatch.setenv("OSSERVAPREZZI_NO_LOCK", "1")
+    gate = RequestGate(min_interval=0.6)
+    with gate.slot():
+        pass
+    inizio = time.time()
+    with gate.slot():
+        pass
+    assert time.time() - inizio >= 0.5
+    assert not lock_path().exists()
+
+
+def test_ogni_richiesta_del_fetcher_passa_dal_gate(monkeypatch):
+    """Il collegamento fra Fetcher e gate è parte del contratto, non un caso."""
+    import httpx
+
+    from osservaprezzi.http import Fetcher
+
+    class GateSpia:
+        def __init__(self) -> None:
+            self.ingressi = 0
+
+        @contextmanager
+        def slot(self):
+            self.ingressi += 1
+            yield
+
+    spia = GateSpia()
+    transport = httpx.MockTransport(lambda request: httpx.Response(200, text="<html></html>"))
+    fetcher = Fetcher(client=httpx.Client(transport=transport), gate=spia)
+
+    fetcher.get("https://example.invalid/a")
+    fetcher.get("https://example.invalid/b")
+    assert spia.ingressi == 2
+
+
+def test_i_tentativi_ripetuti_restano_dentro_un_solo_slot(monkeypatch):
+    """Un retry non rilascia lo slot: resta una richiesta per volta."""
+    import httpx
+
+    from osservaprezzi.http import Fetcher
+
+    class GateSpia:
+        def __init__(self) -> None:
+            self.ingressi = 0
+
+        @contextmanager
+        def slot(self):
+            self.ingressi += 1
+            yield
+
+    risposte = [httpx.Response(503, text=""), httpx.Response(200, text="<html></html>")]
+    transport = httpx.MockTransport(lambda request: risposte.pop(0))
+    spia = GateSpia()
+    fetcher = Fetcher(client=httpx.Client(transport=transport), gate=spia, retries=1)
+    monkeypatch.setattr(fetcher, "_sleep_backoff", lambda *a, **k: None)
+
+    fetcher.get("https://example.invalid/a")
+    assert fetcher.requests_made == 2
+    assert spia.ingressi == 1

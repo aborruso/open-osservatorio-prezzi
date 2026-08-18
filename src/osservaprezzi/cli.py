@@ -622,6 +622,8 @@ def archive(
 @app.command("agent-context")
 def agent_context(
     pretty: bool = typer.Option(False, "--pretty", help="Indentazione leggibile."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
+    json_output: bool = typer.Option(False, "--json", help="Output JSON."),
 ) -> None:
     """Descrive l'intero contratto della CLI in una sola chiamata.
 
@@ -634,6 +636,8 @@ def agent_context(
       osservaprezzi agent-context
       osservaprezzi agent-context --pretty
     """
+    # L'output è già JSON: --json e --agent sono accettati perché un agente
+    # non debba sapere che questo comando fa eccezione.
     contesto = {
         "tool": "osservaprezzi",
         "version": __version__,

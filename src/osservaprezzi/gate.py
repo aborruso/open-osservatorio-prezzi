@@ -64,6 +64,11 @@ class RequestGate:
     @contextmanager
     def slot(self):
         if not self.enabled:
+            # Disattivare il lock toglie la serializzazione fra processi, mai
+            # il ritmo: l'intervallo minimo continua a valere, altrimenti una
+            # variabile d'ambiente basterebbe a scatenare richieste a raffica.
+            self._respect_interval()
+            self._mark()
             yield
             return
 
@@ -92,7 +97,7 @@ class RequestGate:
                         f"un'altra esecuzione era in corso: atteso {attesa:.0f}s"
                     )
                 self._respect_interval()
-                timestamp_path().write_text(str(time.time()), encoding="utf-8")
+                self._mark()
                 yield
         except portalocker.exceptions.LockException as exc:
             raise ServiceUnavailable(
@@ -102,6 +107,10 @@ class RequestGate:
                 waited_seconds=round(time.time() - attesa_iniziata, 1),
                 hint="attendi il termine dell'altra esecuzione oppure alza --lock-timeout",
             ) from exc
+
+    def _mark(self) -> None:
+        """Registra l'istante di invio, condiviso fra i processi."""
+        timestamp_path().write_text(str(time.time()), encoding="utf-8")
 
     def _respect_interval(self) -> None:
         """Attende il tempo che manca all'intervallo minimo fra due invii."""

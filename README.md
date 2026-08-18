@@ -10,7 +10,7 @@ Sul portale quei dati si consultano una pagina alla volta, scegliendo mese, prov
 
 | | Cosa contiene | Aggiornamento | Dettaglio |
 |---|---|---|---|
-| **consumo** | Prezzi al dettaglio di 159 tra beni e servizi: pane, carne, pesce, benzina, ortofrutta, parrucchiere, lavanderia… | mensile | 64 province |
+| **consumo** | Prezzi al dettaglio di beni e servizi — pane, carne, pesce, benzina, ortofrutta, parrucchiere, lavanderia… — fino a circa 160 voci, con differenze fra province | mensile | 64 province |
 | **ortofrutta-it** | Quotazioni all'ingrosso di frutta e verdura | settimanale | 23 mercati italiani |
 | **ortofrutta-eu** | Le stesse quotazioni sui mercati esteri | settimanale | 11 mercati europei |
 
@@ -226,7 +226,7 @@ Tre avvertenze che vengono dal portale stesso e che conviene prendere sul serio.
 
 ## Un vincolo voluto: una richiesta alla volta
 
-Il portale è un servizio pubblico pensato per la consultazione umana, senza API. Per non sovraccaricarlo, lo strumento esegue **una sola richiesta alla volta su tutto il computer**: se lanci due comandi in parallelo, il secondo aspetta il suo turno invece di aggiungere traffico. Fra una richiesta e l'altra passa almeno un secondo.
+Il portale è un servizio pubblico pensato per la consultazione umana, senza API. Per non sovraccaricarlo, lo strumento lascia passare **una sola richiesta alla volta su tutto il computer**, con almeno un secondo fra l'una e l'altra. Se lanci due comandi in parallelo non raddoppi il traffico: si alternano, e nell'insieme vanno alla velocità di uno solo. Un archivio lungo non ti impedisce quindi di fare nel frattempo una singola interrogazione — aspetterà solo il suo turno.
 
 Non è una limitazione da aggirare: è il motivo per cui uno strumento del genere può esistere senza creare problemi a chi lo ospita. Se ti servono volumi molto grandi, la strada giusta è chiedere i dati alla fonte.
 

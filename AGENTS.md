@@ -28,6 +28,12 @@ osservaprezzi get consumo --year 2025 --month 5 --province Roma --category energ
 5. **Leggi gli errori da `stderr`.** `stdout` contiene solo dati: `comando --agent 2>&1 >/dev/null | jq .`
 6. **Prima di un archivio, chiedi il piano.** `archive ... --dry-run --agent` dice quante richieste servono, senza eseguirle.
 
+## Nessun parallelismo
+
+Le richieste al portale sono serializzate su tutta la macchina da un lock su file: una sola per volta, con un intervallo minimo condiviso fra processi. Lanciare più istanze in parallelo non accelera nulla — si alternano. Non tentare di aggirare il vincolo con task concorrenti: il traffico complessivo resterebbe lo stesso e serviresti solo a rendere imprevedibili le attese. Se un comando sembra fermo, sta aspettando il suo turno e lo dichiara su `stderr` con `--verbose`.
+
+`--lock-timeout` limita l'attesa: allo scadere il comando esce con `service_unavailable` (uscita 5, `retryable: true`), mai proseguendo in parallelo.
+
 ## Interpretazione dei dati
 
 I prezzi sono **livelli** in euro, non indici. Il portale sconsiglia i confronti fra province e fra mesi: sotto la stessa descrizione possono esserci varietà, marche e confezioni diverse. Per le serie storiche la fonte corretta sono gli indici ISTAT (NIC, IPCA), disponibili via SDMX.
