@@ -257,7 +257,7 @@ Uno scarto dell'1,6% fra la prima e l'ultima, contro il più del doppio che sepa
 
 ### Cosa non regge
 
-Classifiche fra città sugli alimentari e serie storiche di qualsiasi voce. Non è una cautela formale: sono conclusioni che i dati non sostengono. Per l'andamento nel tempo la fonte corretta sono gli indici dei prezzi al consumo dell'Istat (NIC, IPCA), disponibili via SDMX fino al dettaglio provinciale — costruiti confrontando ogni prodotto con se stesso, quindi immuni al cambio di composizione. In cambio danno la variazione, non il prezzo in euro.
+Classifiche fra città sugli alimentari e serie storiche di qualsiasi voce. Non è una cautela formale: sono conclusioni che i dati non sostengono. Per l'andamento nel tempo la fonte corretta sono gli indici dei prezzi al consumo dell'Istat, costruiti confrontando ogni prodotto con se stesso e quindi immuni al cambio di composizione. In cambio danno la variazione, non il prezzo in euro. Sono pubblicati via SDMX: il **NIC** arriva fino al dettaglio provinciale (132 aree fra Italia, ripartizioni, regioni e province) ed espone numeri indice e variazioni congiunturali e tendenziali; l'**IPCA**, l'indice armonizzato europeo, è invece solo nazionale.
 
 Sono due strumenti con due mestieri: i **livelli** dicono quanto si paga qui e ora, gli **indici** come si muove nel tempo.
 
