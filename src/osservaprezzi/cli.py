@@ -93,15 +93,21 @@ def _emit(
     json_output: bool,
     csv_output: bool,
     output: Optional[Path],
+    hide_provenance: bool = False,
 ) -> None:
     if json_output:
         text = render.to_json(payload)
     elif csv_output:
         text = render.to_csv(records or [], columns)
     else:
-        # La tabella è la vista per persone: la provenienza, identica su tutte
-        # le righe, resta in JSON e CSV.
-        visible = [c for c in (columns or []) if c not in PROVENANCE_FIELDS]
+        # Nelle osservazioni la provenienza è identica su tutte le righe e
+        # renderebbe illeggibile la tabella: resta in JSON e CSV. Nei comandi
+        # di scoperta, invece, `collection` è un identificatore e va mostrato.
+        visible = [
+            c
+            for c in (columns or [])
+            if not (hide_provenance and c in PROVENANCE_FIELDS)
+        ]
         text = render.to_table(records or [], visible)
     render.write(text, output)
 
@@ -312,7 +318,15 @@ def get(
         "notes": list(collection.notes),
         "records": result.records,
     }
-    _emit(payload, result.records, columns, json_output, csv_output, output)
+    _emit(
+        payload,
+        result.records,
+        columns,
+        json_output,
+        csv_output,
+        output,
+        hide_provenance=True,
+    )
 
 
 @app.command()
@@ -355,7 +369,15 @@ def run(
         "notes": list(collection.notes),
         "records": result.records,
     }
-    _emit(payload, result.records, columns, json_output, csv_output, output)
+    _emit(
+        payload,
+        result.records,
+        columns,
+        json_output,
+        csv_output,
+        output,
+        hide_provenance=True,
+    )
 
 
 @app.command()

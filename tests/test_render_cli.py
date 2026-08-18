@@ -331,3 +331,16 @@ def test_archivio_parziale_esce_con_codice_dedicato(tmp_path, monkeypatch):
     assert sommario["requests"]["failed"] >= 1
     manifest = json.loads((destinazione / "manifest.json").read_text("utf-8"))
     assert manifest["status"] == "partial"
+
+
+def test_catalog_in_tabella_mostra_l_identificatore():
+    result = runner.invoke(cli_module.app, ["catalog"])
+    assert result.stdout.splitlines()[0].startswith("collection")
+    assert "ortofrutta-eu" in result.stdout
+
+
+def test_get_in_tabella_nasconde_la_provenienza():
+    result = runner.invoke(cli_module.app, GET_CONSUMO)
+    intestazione = result.stdout.splitlines()[0]
+    assert "source_url" not in intestazione
+    assert intestazione.startswith("year")

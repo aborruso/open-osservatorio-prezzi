@@ -4,6 +4,7 @@
 
 - Completata la prima versione: verificati sul campo `run` e `archive`, aggiunti i test di parità, contratto e archivio (57 test verdi).
 - Eseguito l'archivio di accettazione su 64 province: 60 righe, nessun duplicato, manifest `complete` conservato in `docs/evidence/`.
+- Corretto un difetto della vista tabella: `catalog` nascondeva la colonna `collection`, cioè l'identificatore da usare nei comandi successivi.
 - Corretto un difetto della cache: i domini venivano memorizzati anche da pagine con filtri rifiutati.
 - Chiusi tre rilievi della revisione: `defaults_used` nella provenienza di ogni record, test dell'uscita 6 per l'archivio parziale, nota sulla vista tabella nel README.
 - Allineati `docs/evaluation.md` e `tasks/todo.md` con le evidenze e la revisione dei dieci criteri di accettazione.
