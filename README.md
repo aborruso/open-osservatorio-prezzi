@@ -208,17 +208,20 @@ osservaprezzi archive consumo \
 
 Non serve più indicare la categoria né la descrizione completa: se il testo corrisponde a un solo prodotto, la CLI lo riconosce e completa il filtro da sola, dicendotelo. Se corrisponde a più prodotti, l'errore li elenca invece di scegliere al posto tuo.
 
-Prima di partire puoi vedere quanto costerà, senza chiedere niente al portale:
+Prima di partire puoi vedere quanto costerà:
 
 ```bash
-osservaprezzi archive consumo --year 2025 --month 5 --category altri_alim \
-  --all province --dry-run
+osservaprezzi archive consumo --year 2025 --month 5 \
+  --all province --product "pane fresco" --dry-run
 ```
 
 ```
+prodotto risolto dal catalogo: 'Pane Fresco Con Farina Di Grano (1000 Gr)' in category=altri_alim
 richieste previste: 64
 dimensioni espanse: province (64)
 ```
+
+Il piano in sé non interroga il portale; se però hai usato `--product` e il catalogo non è ancora in cache, viene costruito ora — sono le stesse richieste che farebbe `find`, una per categoria.
 
 Al termine trovi due file:
 

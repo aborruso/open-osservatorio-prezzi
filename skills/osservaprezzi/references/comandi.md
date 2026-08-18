@@ -152,7 +152,7 @@ Opzioni specifiche:
 | Opzione | Effetto |
 |---|---|
 | `--all <dimensione>` | espande su tutti i valori; ripetibile |
-| `--product <testo>` | filtro locale a confronto esatto normalizzato |
+| `--product <testo>` | filtro locale; accetta parte del nome e risolve la categoria se univoco |
 | `--output <dir>` | directory dell'archivio, obbligatoria per eseguire |
 | `--format csv\|jsonl` | formato del file dati |
 | `--max-requests <n>` | limite rigido, default 100: il piano che lo supera non parte |
