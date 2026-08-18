@@ -47,7 +47,45 @@ Integra il comando in script e processi schedulati usando output deterministico,
 - **Provenienza verificabile:** ogni risultato conserva sorgente e momento di acquisizione.
 - **Automazione prudente:** richieste limitate, retry controllati e nessuna operazione mutativa.
 - **Browser non necessario a runtime:** il browser è ammesso nella fase di ricerca, non come trasporto della CLI distribuita.
+- **Interfaccia autodescrittiva:** l'aiuto della CLI è parte del prodotto, non documentazione accessoria.
+- **Accesso serializzato:** il servizio pubblico è una risorsa condivisa e fragile; nessuna esecuzione può sommarsi a un'altra.
 - **Differenze preservate:** dati al consumo e quotazioni all’ingrosso condividono solo i campi realmente equivalenti.
+
+## Principi fondativi
+
+Due caratteristiche non sono funzionalità accessorie ma condizioni di esistenza del prodotto: senza di esse la CLI resta uno script, non uno strumento affidabile né orchestrabile.
+
+### L'aiuto è il contratto
+
+Chi usa questa CLI — una persona, uno script o un modello linguistico — non conosce il portale, non ha letto questo documento e non deve dedurre nulla. L'unica superficie che incontra è l'aiuto dei comandi. Se l'aiuto tace, l'utente indovina; se indovina, sbaglia; e poiché ogni tentativo sbagliato è una richiesta al servizio pubblico, l'ambiguità dell'aiuto si traduce in traffico inutile su un'infrastruttura della pubblica amministrazione.
+
+Per un agente LLM il problema è più netto: un aiuto incompleto non produce un'esitazione ma un'invenzione. Un modello che non trova scritto quali filtri appartengano a quale collezione non chiede, prova; e prova con valori verosimili, che il portale accetta restituendo pagine vuote. Un aiuto autodescrittivo è quindi il principale strumento di prevenzione degli errori, prima ancora della validazione.
+
+Ne discendono requisiti verificabili:
+
+- **RF-27:** ogni comando espone nell'aiuto almeno un esempio eseguibile e completo.
+- **RF-28:** ogni opzione dichiara nell'aiuto a quali collezioni si applica e da quali altre opzioni dipende.
+- **RF-29:** l'aiuto di ciascun comando indica il passo successivo del percorso di scoperta e i codici di uscita rilevanti.
+- **RF-30:** un comando `agent-context` restituisce in una sola chiamata l'intero contratto — collezioni, dimensioni e dipendenze, comandi con esempi, codici di uscita, forma degli errori e garanzie — così che nessun consumatore debba ricavarlo dall'aiuto testuale.
+- **RF-31:** un'opzione unica `--agent` attiva insieme output JSON, assenza di colori e assenza di interazione, evitando che l'uso non presidiato dipenda dal ricordarsi più opzioni.
+- **RF-32:** i test verificano la presenza degli esempi e delle dichiarazioni di appartenenza nell'aiuto; un aiuto che si svuota fa fallire la suite.
+
+### Il servizio pubblico non si satura
+
+I dati provengono da un portale della pubblica amministrazione, dimensionato per la consultazione umana e privo di API. Uno strumento che rende banale automatizzare le richieste rende altrettanto banale saturarlo: bastano poche esecuzioni concorrenti, o un ciclo distratto in uno script, per trasformare una consultazione legittima in un carico anomalo. La responsabilità di evitarlo è dello strumento, non della disciplina di chi lo usa.
+
+La sequenzialità interna a un archivio non basta, perché non governa ciò che accade fra processi distinti: due esecuzioni lanciate in parallelo — da due terminali, da uno script, da un agente che apre più task — sommano il loro traffico. Il controllo deve quindi essere esterno al singolo processo e valere per l'intera macchina.
+
+Ne discendono requisiti verificabili:
+
+- **RF-33:** una sola esecuzione per volta può interrogare il portale sulla stessa macchina; il vincolo è imposto da un lock su file, non dalla cooperazione fra processi.
+- **RF-34:** una seconda esecuzione attende il rilascio dello slot anziché fallire, e segnala l'attesa su `stderr`.
+- **RF-35:** l'attesa è limitata da `--lock-timeout`, oltre il quale l'esecuzione termina con errore `service_unavailable` e uscita 5, mai proseguendo in parallelo.
+- **RF-36:** fra due richieste consecutive è rispettato un intervallo minimo condiviso fra processi, misurato da invio a invio; `--pause` può alzarlo, non abbassarlo sotto il minimo.
+- **RF-37:** la terminazione anomala di un processo libera lo slot, perché il lock è mantenuto dal sistema operativo e non da uno stato applicativo.
+- **RF-38:** il comportamento è verificato da test che eseguono due processi concorrenti reali.
+
+Il parallelismo non è quindi una funzionalità mancante da aggiungere in futuro: è una funzionalità esclusa per scelta. Chi ha bisogno di volumi maggiori deve chiedere i dati alla fonte, non estrarli più in fretta.
 
 ## Perimetro della prima versione
 

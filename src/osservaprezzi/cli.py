@@ -9,6 +9,8 @@ su `stderr`.
 from __future__ import annotations
 
 import functools
+import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Callable, Optional
@@ -22,6 +24,7 @@ from .archive import DEFAULT_MAX_REQUESTS, build_plan, run_archive
 from .cache import MetadataCache
 from .client import Client
 from .collections import COLLECTIONS, Collection, get_collection
+from .gate import DEFAULT_LOCK_TIMEOUT
 from .http import DEFAULT_PAUSE, DEFAULT_RETRIES, DEFAULT_TIMEOUT, Fetcher
 from .query import load as load_query
 
@@ -36,6 +39,24 @@ app = typer.Typer(
 
 FILTER_OPTIONS = ("year", "month", "week", "province", "category", "market", "group")
 
+# L'help di ogni filtro dichiara a quali collezioni appartiene e da cosa
+# dipende: sono le due informazioni che altrimenti si scoprono solo sbagliando.
+H_YEAR = "Anno. Tutte le collezioni."
+H_MONTH = "Mese, da 1 a 12. Tutte le collezioni. Il dominio dipende da --year."
+H_WEEK = (
+    "Settimana del mese. Solo ortofrutta-it e ortofrutta-eu. "
+    "Il dominio dipende da --year e --month."
+)
+H_PROVINCE = "Provincia di rilevazione. Solo consumo."
+H_CATEGORY = "Tipologia di prodotto. Solo consumo."
+H_MARKET = "Mercato all'ingrosso. Solo ortofrutta-it e ortofrutta-eu."
+H_GROUP = "Gruppo merceologico. Solo ortofrutta-it e ortofrutta-eu."
+H_AGENT = "Modalità agente: JSON, senza colori e senza interazione."
+H_LOCK_TIMEOUT = (
+    "Secondi di attesa se un'altra esecuzione sta già interrogando il portale. "
+    "0 attende senza limite."
+)
+
 
 def _fail(error: err.OsservaprezziError, as_json: bool) -> None:
     raise typer.Exit(err.emit(error, as_json))
@@ -44,6 +65,11 @@ def _fail(error: err.OsservaprezziError, as_json: bool) -> None:
 def handle_errors(func: Callable) -> Callable:
     @functools.wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
+        if kwargs.pop("agent", False):
+            # `--agent` è la scorciatoia per l'uso non interattivo: JSON su
+            # dati ed errori, nessun colore, nessun comportamento implicito.
+            kwargs["json_output"] = True
+            os.environ["NO_COLOR"] = "1"
         as_json = bool(kwargs.get("json_output"))
         try:
             return func(*args, **kwargs)
@@ -54,10 +80,21 @@ def handle_errors(func: Callable) -> Callable:
 
 
 def _make_client(
-    timeout: float, retries: int, pause: float, refresh: bool, verbose: bool
+    timeout: float,
+    retries: int,
+    pause: float,
+    refresh: bool,
+    verbose: bool,
+    lock_timeout: float = DEFAULT_LOCK_TIMEOUT,
 ) -> tuple[Client, MetadataCache, Fetcher]:
     cache = MetadataCache()
-    fetcher = Fetcher(timeout=timeout, retries=retries, pause=pause, verbose=verbose)
+    fetcher = Fetcher(
+        timeout=timeout,
+        retries=retries,
+        pause=pause,
+        verbose=verbose,
+        lock_timeout=lock_timeout,
+    )
     return Client(fetcher, cache, refresh=refresh), cache, fetcher
 
 
@@ -119,10 +156,19 @@ def _emit(
 @handle_errors
 def catalog(
     json_output: bool = typer.Option(False, "--json", help="Output JSON."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
     csv_output: bool = typer.Option(False, "--csv", help="Output CSV."),
     output: Optional[Path] = typer.Option(None, "--output", help="Scrive su file."),
 ) -> None:
-    """Elenca le collezioni supportate. Passo successivo: `describe <collezione>`."""
+    """Elenca le collezioni supportate.
+
+    \b
+    Esempi:
+      osservaprezzi catalog
+      osservaprezzi catalog --json
+
+    Passo successivo: osservaprezzi describe <collezione>
+    """
     records = [
         {
             "collection": c.id,
@@ -155,16 +201,28 @@ def catalog(
 def describe(
     collection_id: str = typer.Argument(..., metavar="COLLEZIONE"),
     json_output: bool = typer.Option(False, "--json", help="Output JSON."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
     csv_output: bool = typer.Option(False, "--csv", help="Output CSV."),
     output: Optional[Path] = typer.Option(None, "--output", help="Scrive su file."),
     refresh: bool = typer.Option(False, "--refresh", help="Ignora la cache dei metadati."),
     timeout: float = typer.Option(DEFAULT_TIMEOUT, "--timeout"),
     retries: int = typer.Option(DEFAULT_RETRIES, "--retries"),
+    lock_timeout: float = typer.Option(
+        DEFAULT_LOCK_TIMEOUT, "--lock-timeout", help=H_LOCK_TIMEOUT
+    ),
     verbose: bool = typer.Option(False, "--verbose", help="Diagnostica su stderr."),
 ) -> None:
-    """Descrive metadati, dimensioni e copertura temporale di una collezione."""
+    """Descrive metadati, dimensioni e copertura temporale di una collezione.
+
+    \b
+    Esempi:
+      osservaprezzi describe consumo
+      osservaprezzi describe ortofrutta-it --json
+
+    Passo successivo: osservaprezzi values <collezione> <dimensione>
+    """
     collection = get_collection(collection_id)
-    client, cache, fetcher = _make_client(timeout, retries, 0.0, refresh, verbose)
+    client, cache, fetcher = _make_client(timeout, retries, 0.0, refresh, verbose, lock_timeout)
     try:
         years, meta = client.values(collection, "year")
         payload = {
@@ -215,21 +273,33 @@ def describe(
 def values(
     collection_id: str = typer.Argument(..., metavar="COLLEZIONE"),
     dimension: str = typer.Argument(..., metavar="DIMENSIONE"),
-    year: Optional[int] = typer.Option(None, "--year"),
-    month: Optional[int] = typer.Option(None, "--month"),
-    week: Optional[int] = typer.Option(None, "--week"),
+    year: Optional[int] = typer.Option(None, "--year", help=H_YEAR),
+    month: Optional[int] = typer.Option(None, "--month", help=H_MONTH),
+    week: Optional[int] = typer.Option(None, "--week", help=H_WEEK),
     json_output: bool = typer.Option(False, "--json", help="Output JSON."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
     csv_output: bool = typer.Option(False, "--csv", help="Output CSV."),
     output: Optional[Path] = typer.Option(None, "--output", help="Scrive su file."),
     refresh: bool = typer.Option(False, "--refresh", help="Ignora la cache dei metadati."),
     timeout: float = typer.Option(DEFAULT_TIMEOUT, "--timeout"),
     retries: int = typer.Option(DEFAULT_RETRIES, "--retries"),
+    lock_timeout: float = typer.Option(
+        DEFAULT_LOCK_TIMEOUT, "--lock-timeout", help=H_LOCK_TIMEOUT
+    ),
     verbose: bool = typer.Option(False, "--verbose", help="Diagnostica su stderr."),
 ) -> None:
     """Elenca i valori ammessi per una dimensione.
 
     I domini dipendenti richiedono i filtri genitori: i mesi dipendono
     dall'anno, le settimane da anno e mese.
+
+    \b
+    Esempi:
+      osservaprezzi values consumo province
+      osservaprezzi values consumo month --year 2025
+      osservaprezzi values ortofrutta-it week --year 2025 --month 5
+
+    Passo successivo: osservaprezzi get <collezione> <filtri>
     """
     collection = get_collection(collection_id)
     parents = {
@@ -237,7 +307,7 @@ def values(
         for k, v in (("year", year), ("month", month), ("week", week))
         if v is not None
     }
-    client, cache, fetcher = _make_client(timeout, retries, 0.0, refresh, verbose)
+    client, cache, fetcher = _make_client(timeout, retries, 0.0, refresh, verbose, lock_timeout)
     try:
         options, meta = client.values(collection, dimension, parents)
         cache.flush()
@@ -261,29 +331,49 @@ def values(
 @handle_errors
 def get(
     collection_id: str = typer.Argument(..., metavar="COLLEZIONE"),
-    year: Optional[int] = typer.Option(None, "--year"),
-    month: Optional[int] = typer.Option(None, "--month"),
-    week: Optional[int] = typer.Option(None, "--week"),
-    province: Optional[str] = typer.Option(None, "--province"),
-    category: Optional[str] = typer.Option(None, "--category"),
-    market: Optional[str] = typer.Option(None, "--market"),
-    group: Optional[str] = typer.Option(None, "--group"),
+    year: Optional[int] = typer.Option(None, "--year", help=H_YEAR),
+    month: Optional[int] = typer.Option(None, "--month", help=H_MONTH),
+    week: Optional[int] = typer.Option(None, "--week", help=H_WEEK),
+    province: Optional[str] = typer.Option(None, "--province", help=H_PROVINCE),
+    category: Optional[str] = typer.Option(None, "--category", help=H_CATEGORY),
+    market: Optional[str] = typer.Option(None, "--market", help=H_MARKET),
+    group: Optional[str] = typer.Option(None, "--group", help=H_GROUP),
     latest: bool = typer.Option(
         False, "--latest", help="Usa i valori predefiniti del portale per i filtri mancanti."
     ),
     limit: Optional[int] = typer.Option(None, "--limit", help="Numero massimo di osservazioni."),
     json_output: bool = typer.Option(False, "--json", help="Output JSON."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
     csv_output: bool = typer.Option(False, "--csv", help="Output CSV."),
     output: Optional[Path] = typer.Option(None, "--output", help="Scrive su file."),
     refresh: bool = typer.Option(False, "--refresh", help="Ignora la cache dei metadati."),
     timeout: float = typer.Option(DEFAULT_TIMEOUT, "--timeout"),
     retries: int = typer.Option(DEFAULT_RETRIES, "--retries"),
+    lock_timeout: float = typer.Option(
+        DEFAULT_LOCK_TIMEOUT, "--lock-timeout", help=H_LOCK_TIMEOUT
+    ),
     verbose: bool = typer.Option(False, "--verbose", help="Diagnostica su stderr."),
 ) -> None:
-    """Recupera le osservazioni per una combinazione esplicita di filtri."""
+    """Recupera le osservazioni per una combinazione esplicita di filtri.
+
+    Tutti i filtri della collezione sono obbligatori: i valori predefiniti del
+    portale cambiano nel tempo e vanno richiesti con --latest.
+
+    \b
+    Esempi:
+      osservaprezzi get consumo --year 2025 --month 5
+        --province Roma --category energia
+      osservaprezzi get ortofrutta-it --year 2025 --month 5 --week 2
+        --market ROMA --group ORTAGGI
+      osservaprezzi get ortofrutta-eu --year 2025 --month 5 --week 2
+        --market PARIGI --group ORTAGGI --csv
+      osservaprezzi get consumo --latest --json
+
+    Uscite: 2 filtro non ammesso, 3 nessun dato, 4 contratto cambiato.
+    """
     collection = get_collection(collection_id)
     filters = _collect_filters(collection, locals())
-    client, cache, fetcher = _make_client(timeout, retries, 0.0, refresh, verbose)
+    client, cache, fetcher = _make_client(timeout, retries, 0.0, refresh, verbose, lock_timeout)
     try:
         defaults_used: list[str] = []
         if latest:
@@ -335,20 +425,37 @@ def run(
     query_file: Path = typer.Argument(..., metavar="QUERY.YAML"),
     output: Optional[Path] = typer.Option(None, "--output", help="Scrive su file."),
     json_output: bool = typer.Option(False, "--json", help="Forza output JSON."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
     csv_output: bool = typer.Option(False, "--csv", help="Forza output CSV."),
     refresh: bool = typer.Option(False, "--refresh"),
     timeout: float = typer.Option(DEFAULT_TIMEOUT, "--timeout"),
     retries: int = typer.Option(DEFAULT_RETRIES, "--retries"),
+    lock_timeout: float = typer.Option(
+        DEFAULT_LOCK_TIMEOUT, "--lock-timeout", help=H_LOCK_TIMEOUT
+    ),
     verbose: bool = typer.Option(False, "--verbose"),
 ) -> None:
-    """Esegue una query salvata in YAML."""
+    """Esegue una query salvata in YAML.
+
+    \b
+    Esempi:
+      osservaprezzi run query.yaml
+      osservaprezzi run query.yaml --csv --output dati.csv
+
+    \b
+    Schema del file:
+      version: 1
+      collection: ortofrutta-it
+      filters: {year: 2025, month: 5, week: 2, market: ROMA, group: ORTAGGI}
+      format: json
+    """
     saved = load_query(query_file)
     collection = get_collection(saved.collection)
     if not json_output and not csv_output:
         json_output = saved.format == "json"
         csv_output = saved.format == "csv"
 
-    client, cache, fetcher = _make_client(timeout, retries, 0.0, refresh, verbose)
+    client, cache, fetcher = _make_client(timeout, retries, 0.0, refresh, verbose, lock_timeout)
     try:
         result = client.get(collection, saved.filters, limit=saved.limit)
         cache.flush()
@@ -384,13 +491,13 @@ def run(
 @handle_errors
 def archive(
     collection_id: str = typer.Argument(..., metavar="COLLEZIONE"),
-    year: Optional[int] = typer.Option(None, "--year"),
-    month: Optional[int] = typer.Option(None, "--month"),
-    week: Optional[int] = typer.Option(None, "--week"),
-    province: Optional[str] = typer.Option(None, "--province"),
-    category: Optional[str] = typer.Option(None, "--category"),
-    market: Optional[str] = typer.Option(None, "--market"),
-    group: Optional[str] = typer.Option(None, "--group"),
+    year: Optional[int] = typer.Option(None, "--year", help=H_YEAR),
+    month: Optional[int] = typer.Option(None, "--month", help=H_MONTH),
+    week: Optional[int] = typer.Option(None, "--week", help=H_WEEK),
+    province: Optional[str] = typer.Option(None, "--province", help=H_PROVINCE),
+    category: Optional[str] = typer.Option(None, "--category", help=H_CATEGORY),
+    market: Optional[str] = typer.Option(None, "--market", help=H_MARKET),
+    group: Optional[str] = typer.Option(None, "--group", help=H_GROUP),
     all_dimensions: list[str] = typer.Option(
         [], "--all", help="Dimensione da espandere su tutti i valori (ripetibile)."
     ),
@@ -404,12 +511,30 @@ def archive(
     dry_run: bool = typer.Option(False, "--dry-run", help="Mostra il piano senza eseguirlo."),
     resume: bool = typer.Option(False, "--resume", help="Ripete solo le richieste mancanti o fallite."),
     json_output: bool = typer.Option(False, "--json", help="Output JSON."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
     refresh: bool = typer.Option(False, "--refresh"),
     timeout: float = typer.Option(DEFAULT_TIMEOUT, "--timeout"),
     retries: int = typer.Option(DEFAULT_RETRIES, "--retries"),
+    lock_timeout: float = typer.Option(
+        DEFAULT_LOCK_TIMEOUT, "--lock-timeout", help=H_LOCK_TIMEOUT
+    ),
     verbose: bool = typer.Option(False, "--verbose"),
 ) -> None:
-    """Crea un archivio espandendo una o più dimensioni, in sequenza."""
+    """Crea un archivio espandendo una o più dimensioni, in sequenza.
+
+    Ogni dimensione non espansa va filtrata: nessuna espansione è implicita.
+
+    \b
+    Esempi (piano, esecuzione, ripresa):
+      osservaprezzi archive consumo --year 2025 --month 5
+        --category altri_alim --all province --dry-run
+      osservaprezzi archive consumo --year 2025 --month 5
+        --category altri_alim --all province --output archivio
+      osservaprezzi archive ortofrutta-it --year 2025 --month 5 --week 2
+        --group ORTAGGI --all market --output archivio --resume
+
+    Produce data.csv (o data.jsonl) e manifest.json. Uscita 6 se resta parziale.
+    """
     collection = get_collection(collection_id)
     filters = _collect_filters(collection, locals())
     if data_format not in {"csv", "jsonl"}:
@@ -425,7 +550,7 @@ def archive(
             hint=f"osservaprezzi values {collection.id} category",
         )
 
-    client, cache, fetcher = _make_client(timeout, retries, pause, refresh, verbose)
+    client, cache, fetcher = _make_client(timeout, retries, pause, refresh, verbose, lock_timeout)
     try:
         plan = build_plan(client, collection, filters, list(all_dimensions), product)
         cache.flush()
@@ -494,11 +619,136 @@ def archive(
         raise typer.Exit(err.EXIT_PARTIAL_RESPONSE)
 
 
+@app.command("agent-context")
+def agent_context(
+    pretty: bool = typer.Option(False, "--pretty", help="Indentazione leggibile."),
+) -> None:
+    """Descrive l'intero contratto della CLI in una sola chiamata.
+
+    Pensato per essere il primo comando eseguito da un agente: elenca
+    collezioni, dimensioni con le loro dipendenze, comandi, codici di uscita e
+    forma degli errori, così non serve dedurre nulla dall'help testuale.
+
+    \b
+    Esempi:
+      osservaprezzi agent-context
+      osservaprezzi agent-context --pretty
+    """
+    contesto = {
+        "tool": "osservaprezzi",
+        "version": __version__,
+        "schema_version": SCHEMA_VERSION,
+        "summary": (
+            "CLI read-only sui dati pubblici dell'Osservatorio Prezzi (MIMIT). "
+            "Restituisce soltanto dati pubblicati dal portale."
+        ),
+        "conventions": {
+            "stdout": "solo dati o output richiesto",
+            "stderr": "diagnostica, progressi ed errori",
+            "errors": "con --json o --agent gli errori sono JSON su stderr",
+            "agent_flag": "--agent equivale a --json senza colori né interazione",
+            "read_only": True,
+            "network": "una richiesta GET per interrogazione, nessun parallelismo",
+        },
+        "workflow": [
+            "osservaprezzi catalog",
+            "osservaprezzi describe <collezione>",
+            "osservaprezzi values <collezione> <dimensione> [filtri genitori]",
+            "osservaprezzi get <collezione> <tutti i filtri>",
+        ],
+        "collections": [
+            {
+                "id": c.id,
+                "title": c.title,
+                "url": c.url,
+                "dimensions": [
+                    {
+                        "name": d.name,
+                        "label": d.label,
+                        "depends_on": list(d.parents),
+                        "required_in_get": True,
+                    }
+                    for d in c.dimensions
+                ],
+                "columns": [c2.name for c2 in c.columns],
+                "natural_key": list(c.natural_key),
+                "notes": list(c.notes),
+            }
+            for c in COLLECTIONS.values()
+        ],
+        "commands": [
+            {
+                "name": "catalog",
+                "purpose": "elenca le collezioni",
+                "example": "osservaprezzi catalog --agent",
+            },
+            {
+                "name": "describe",
+                "purpose": "dimensioni, colonne e copertura di una collezione",
+                "example": "osservaprezzi describe consumo --agent",
+            },
+            {
+                "name": "values",
+                "purpose": "valori ammessi per una dimensione",
+                "example": "osservaprezzi values consumo month --year 2025 --agent",
+            },
+            {
+                "name": "get",
+                "purpose": "osservazioni per una combinazione esplicita di filtri",
+                "example": (
+                    "osservaprezzi get consumo --year 2025 --month 5 "
+                    "--province Roma --category energia --agent"
+                ),
+            },
+            {
+                "name": "run",
+                "purpose": "esegue una query YAML salvata",
+                "example": "osservaprezzi run query.yaml --agent",
+            },
+            {
+                "name": "archive",
+                "purpose": "espande dimensioni e produce dati più manifest",
+                "example": (
+                    "osservaprezzi archive consumo --year 2025 --month 5 "
+                    "--category altri_alim --all province --dry-run --agent"
+                ),
+            },
+        ],
+        "exit_codes": {
+            "0": "successo",
+            "2": "input non valido: collezione, dimensione, filtro o query",
+            "3": "nessun dato per i filtri indicati",
+            "4": "contratto cambiato: HTML non riconosciuto",
+            "5": "servizio temporaneamente indisponibile",
+            "6": "risposta parziale o archivio incompleto",
+        },
+        "error_shape": {
+            "code": "identificatore stabile dell'errore",
+            "message": "descrizione in italiano",
+            "retryable": "vero se ha senso ritentare",
+            "details": "parametri rifiutati, valori ammessi, suggerimento",
+        },
+        "guarantees": [
+            "i valori suggeriti negli errori provengono dal form del portale",
+            "un filtro non applicato dal portale è un errore, non un risultato vuoto",
+            "ogni record conserva collection, source_url e retrieved_at",
+            "gli archivi non partono senza un piano entro --max-requests",
+        ],
+    }
+    render.write(
+        render.to_json(contesto) if pretty else json.dumps(contesto, ensure_ascii=False),
+        output=None,
+    )
+
+
 @app.command()
 def version(
     json_output: bool = typer.Option(False, "--json", help="Output JSON."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
 ) -> None:
     """Mostra versione del programma e dello schema di output."""
+    if agent:
+        json_output = True
     if json_output:
         render.write(
             render.to_json({"version": __version__, "schema_version": SCHEMA_VERSION}),

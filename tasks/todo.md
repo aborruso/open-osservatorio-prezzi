@@ -112,6 +112,22 @@ Limiti noti della prima versione:
 - la licenza dei dati di origine (Istat, Unioncamere, BMTI) resta da chiarire prima di ridistribuire archivi derivati;
 - `--product` è un filtro locale a confronto esatto: non trova varianti di descrizione fra province diverse, e le province senza corrispondenza sono registrate come `no_match` nel manifest.
 
+## Estensione del 2026-08-18: orchestrazione e tutela del servizio
+
+Aggiunti al PRD due principi fondativi con i relativi requisiti verificabili (RF-27…RF-38): l'aiuto come contratto e l'accesso serializzato al servizio pubblico.
+
+- [x] Esempi eseguibili nell'aiuto di ogni comando → verifica: `test_ogni_comando_ha_esempi_nell_help`.
+- [x] Ogni opzione dichiara collezioni di appartenenza e dipendenze → verifica: `test_le_opzioni_filtro_dichiarano_la_collezione`.
+- [x] Comando `agent-context` con l'intero contratto → verifica: `test_agent_context_descrive_il_contratto`.
+- [x] Opzione `--agent` su tutti i comandi, dati ed errori → verifica: `test_agent_equivale_a_json_sui_dati`, `test_agent_produce_errori_json`.
+- [x] `AGENTS.md` con le regole operative per agenti.
+- [x] Lock su file che serializza le esecuzioni sulla stessa macchina → verifica: `test_una_seconda_esecuzione_attende_la_prima`, con due processi reali.
+- [x] Intervallo minimo condiviso fra processi e `--lock-timeout` → verifica: `test_intervallo_minimo_fra_richieste_consecutive`, `test_timeout_scaduto_produce_un_errore_esplicito`.
+- [x] Licenza MIT nel repository, come `opensdmx`.
+- [x] README riscritto per chi analizza i dati, con installazione `uv`/`uvx`/`pip` e output reali.
+
+Verifica sul campo: due esecuzioni lanciate in parallelo hanno prodotto una sola richiesta per volta, con la seconda che ha atteso un secondo e lo ha dichiarato su `stderr`.
+
 ## Domande irrisolte
 
 - Git: inizializzo il repository qui? Il documento cita un commit `edbb3b2` che non esiste in questa directory.

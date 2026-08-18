@@ -12,6 +12,7 @@ import httpx
 
 from . import __version__
 from .errors import ContractChanged, PartialResponse, ServiceUnavailable
+from .gate import DEFAULT_LOCK_TIMEOUT, MIN_INTERVAL, RequestGate
 
 USER_AGENT = f"osservaprezzi/{__version__} (+CLI read-only per dati pubblici)"
 
@@ -38,11 +39,20 @@ class Fetcher:
         pause: float = 0.0,
         verbose: bool = False,
         client: httpx.Client | None = None,
+        gate: RequestGate | None = None,
+        lock_timeout: float = DEFAULT_LOCK_TIMEOUT,
     ) -> None:
         self.timeout = timeout
         self.retries = max(0, retries)
         self.pause = max(0.0, pause)
         self.verbose = verbose
+        # Il gate serializza le richieste fra processi diversi: `pause` alza
+        # l'intervallo minimo, non lo sostituisce.
+        self.gate = gate or RequestGate(
+            min_interval=max(MIN_INTERVAL, self.pause),
+            timeout=lock_timeout,
+            verbose=verbose,
+        )
         self._client = client or httpx.Client(
             headers={"User-Agent": USER_AGENT},
             timeout=timeout,
@@ -68,9 +78,11 @@ class Fetcher:
             print(message, file=sys.stderr)
 
     def get(self, url: str, params: dict[str, str] | None = None) -> Response:
-        if self._requests and self.pause:
-            time.sleep(self.pause)
+        """Esegue una GET occupando lo slot esclusivo di accesso al portale."""
+        with self.gate.slot():
+            return self._get(url, params)
 
+    def _get(self, url: str, params: dict[str, str] | None = None) -> Response:
         attempt = 0
         while True:
             attempt += 1

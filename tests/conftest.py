@@ -14,6 +14,16 @@ from osservaprezzi.http import Fetcher
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
+@pytest.fixture(autouse=True)
+def offline(monkeypatch, tmp_path):
+    """I test non toccano la rete: niente lock condiviso né cache dell'utente.
+
+    Il gate di serializzazione ha test propri in `test_gate.py`.
+    """
+    monkeypatch.setenv("OSSERVAPREZZI_NO_LOCK", "1")
+    monkeypatch.setenv("OSSERVAPREZZI_CACHE_DIR", str(tmp_path / "cache-utente"))
+
+
 def read_fixture(name: str) -> str:
     return (FIXTURES / f"{name}.html").read_text(encoding="utf-8")
 

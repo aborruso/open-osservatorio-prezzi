@@ -2,6 +2,10 @@
 
 ## 2026-08-18
 
+- Aggiunti al PRD due principi fondativi: l'aiuto come contratto e l'accesso serializzato al servizio pubblico (RF-27…RF-38).
+- Aiuto autodescrittivo: esempi in ogni comando, opzioni che dichiarano collezione e dipendenze, comando `agent-context`, opzione `--agent`, `AGENTS.md`.
+- Introdotto un lock su file che impedisce esecuzioni parallele sulla stessa macchina, con intervallo minimo condiviso fra processi e `--lock-timeout`.
+- Aggiunta licenza MIT e riscritto il README per chi analizza i dati.
 - Completata la prima versione: verificati sul campo `run` e `archive`, aggiunti i test di parità, contratto e archivio (57 test verdi).
 - Eseguito l'archivio di accettazione su 64 province: 60 righe, nessun duplicato, manifest `complete` conservato in `docs/evidence/`.
 - Corretto un difetto della vista tabella: `catalog` nascondeva la colonna `collection`, cioè l'identificatore da usare nei comandi successivi.

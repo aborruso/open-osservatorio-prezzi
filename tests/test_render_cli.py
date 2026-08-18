@@ -28,7 +28,7 @@ def cli_offline(monkeypatch, tmp_path):
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(200, text=read_fixture(_fixture_for(request)))
 
-    def make_client(timeout, retries, pause, refresh, verbose):
+    def make_client(timeout, retries, pause, refresh, verbose, lock_timeout=0):
         http_client = httpx.Client(transport=httpx.MockTransport(handler))
         fetcher = Fetcher(client=http_client, verbose=verbose)
         cache = MetadataCache(tmp_path / "cache")
@@ -58,6 +58,8 @@ def test_json_e_csv_rappresentano_gli_stessi_record():
 
     records = json.loads(as_json.stdout)["records"]
     righe = list(csv.DictReader(io.StringIO(as_csv.stdout)))
+    for record, riga in zip(records, righe):
+        record.pop("retrieved_at"), riga.pop("retrieved_at")
     assert len(records) == len(righe)
     for atteso, riga in zip(records, righe):
         for campo, valore in atteso.items():
@@ -154,9 +156,13 @@ def test_query_salvata_equivale_al_comando_get(tmp_path):
     da_query = runner.invoke(cli_module.app, ["run", str(query)])
     da_get = runner.invoke(cli_module.app, GET_CONSUMO + ["--json"])
     assert da_query.exit_code == 0
-    assert (
-        json.loads(da_query.stdout)["records"] == json.loads(da_get.stdout)["records"]
-    )
+    def senza_istante(payload):
+        return [
+            {k: v for k, v in r.items() if k != "retrieved_at"}
+            for r in json.loads(payload)["records"]
+        ]
+
+    assert senza_istante(da_query.stdout) == senza_istante(da_get.stdout)
 
 
 def test_scrittura_su_file(tmp_path):
@@ -258,7 +264,7 @@ def test_latest_registra_i_default_nella_provenienza(monkeypatch, tmp_path):
         # Pagina che espone come predefiniti gli stessi filtri che poi riflette.
         return httpx.Response(200, text=read_fixture("consumo-ok"))
 
-    def make_client(timeout, retries, pause, refresh, verbose):
+    def make_client(timeout, retries, pause, refresh, verbose, lock_timeout=0):
         http_client = httpx.Client(transport=httpx.MockTransport(handler))
         cache = Cache(tmp_path / "latest")
         fetcher = Fetcher(client=http_client, verbose=verbose)
@@ -295,7 +301,7 @@ def test_archivio_parziale_esce_con_codice_dedicato(tmp_path, monkeypatch):
             return httpx.Response(503, text="")
         return httpx.Response(200, text=read_fixture(_fixture_for(request)))
 
-    def make_client(timeout, retries, pause, refresh, verbose):
+    def make_client(timeout, retries, pause, refresh, verbose, lock_timeout=0):
         http_client = httpx.Client(transport=httpx.MockTransport(handler))
         fetcher = Fetcher(client=http_client, retries=0, verbose=verbose)
         return ClientClass(fetcher, Cache(tmp_path / "c"), refresh=refresh), Cache(
@@ -344,3 +350,61 @@ def test_get_in_tabella_nasconde_la_provenienza():
     intestazione = result.stdout.splitlines()[0]
     assert "source_url" not in intestazione
     assert intestazione.startswith("year")
+
+
+def test_agent_context_descrive_il_contratto():
+    result = runner.invoke(cli_module.app, ["agent-context"])
+    assert result.exit_code == 0
+    contesto = json.loads(result.stdout)
+    assert [c["id"] for c in contesto["collections"]] == [
+        "consumo",
+        "ortofrutta-it",
+        "ortofrutta-eu",
+    ]
+    assert set(contesto["exit_codes"]) == {"0", "2", "3", "4", "5", "6"}
+    assert contesto["workflow"][0].startswith("osservaprezzi catalog")
+    settimana = next(
+        d
+        for c in contesto["collections"]
+        if c["id"] == "ortofrutta-it"
+        for d in c["dimensions"]
+        if d["name"] == "week"
+    )
+    assert settimana["depends_on"] == ["year", "month"]
+
+
+def test_agent_equivale_a_json_sui_dati():
+    con_agent = runner.invoke(cli_module.app, GET_CONSUMO + ["--agent"])
+    con_json = runner.invoke(cli_module.app, GET_CONSUMO + ["--json"])
+    def senza_istante(payload):
+        return [
+            {k: v for k, v in r.items() if k != "retrieved_at"}
+            for r in json.loads(payload)["records"]
+        ]
+
+    assert senza_istante(con_agent.stdout) == senza_istante(con_json.stdout)
+
+
+def test_agent_produce_errori_json():
+    result = runner.invoke(cli_module.app, ["get", "consumo", "--year", "2025", "--agent"])
+    assert result.exit_code == 2
+    assert json.loads(result.stderr)["code"] == "invalid_parameter"
+
+
+def test_ogni_comando_ha_esempi_nell_help():
+    for comando in ["catalog", "describe", "values", "get", "run", "archive"]:
+        result = runner.invoke(cli_module.app, [comando, "--help"])
+        assert "osservaprezzi" in result.stdout, comando
+        assert "Esempi" in result.stdout, comando
+
+
+def _testo_help(result) -> str:
+    """Help senza cornici Rich, per verificare le frasi che vanno a capo."""
+    return " ".join(result.stdout.replace("│", " ").split())
+
+
+def test_le_opzioni_filtro_dichiarano_la_collezione():
+    result = runner.invoke(cli_module.app, ["get", "--help"])
+    testo = _testo_help(result)
+    assert "Solo consumo." in testo
+    assert "Solo ortofrutta-it e ortofrutta-eu." in testo
