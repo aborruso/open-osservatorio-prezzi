@@ -2,6 +2,7 @@
 
 ## 2026-08-18
 
+- Aggiunto `find`: cerca un prodotto e dice in quale categoria si trova, risolvendo l'unico punto in cui restava da indovinare. `--product` completa da solo la categoria quando la corrispondenza è unica, come già previsto da RF-20. Catalogo osservato in una cella di riferimento, in cache. Versione 0.4.0.
 - `--province` accetta gli identificatori territoriali standard (codice ISTAT, UTS, NUTS3, sigla) oltre al nome del portale: la traduzione sta nel client, quindi vale anche per query salvate e archivi. Versione 0.3.0.
 - `archive` avverte quando si espande il tempo su `consumo` e propone il comando `opensdmx` sugli indici ISTAT, con il codice NUTS3 della provincia già risolto; l'avvertenza è anche nel manifest. Nasce da un difetto osservato nei test della skill: un agente aveva prodotto variazioni anno su anno e suggerito `archive` sui mesi per farne una serie storica.
 - Aggiunti i codici territoriali ISTAT ai record di `consumo`, ricavati dal SITUAS con `opensituas`: schema di output alla versione 2, pacchetto alla 0.2.0.

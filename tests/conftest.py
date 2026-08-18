@@ -62,3 +62,34 @@ def client(transport: httpx.MockTransport, tmp_path: Path) -> Client:
 def make_client(handler, tmp_path: Path) -> Client:
     http_client = httpx.Client(transport=httpx.MockTransport(handler))
     return Client(Fetcher(client=http_client), MetadataCache(tmp_path / "cache"))
+
+
+def pagina_echo(collection, filters: dict[str, str], domini: dict[str, list[str]], righe: list[list[str]]) -> str:
+    """HTML sintetico che riflette i filtri richiesti e le righe indicate.
+
+    Serve ai test in cui la risposta deve dipendere dalla domanda: il portale
+    riflette sempre i filtri applicati, e senza quell'eco la CLI — a ragione —
+    rifiuta la pagina.
+    """
+    select_html = []
+    for dimension in collection.dimensions:
+        valori = domini.get(dimension.name, [])
+        opzioni = "".join(
+            "<option {} value=\"{}\">{}</option>".format(
+                "selected='selected'" if filters.get(dimension.name) == v else "", v, v
+            )
+            for v in valori
+        )
+        select_html.append(f'<select name="{dimension.html_name}">{opzioni}</select>')
+
+    intestazioni = "".join(f"<th>{c.header}</th>" for c in collection.columns)
+    corpo = "".join(
+        "<tr>" + "".join(f"<td>{cella}</td>" for cella in riga) + "</tr>" for riga in righe
+    )
+    return (
+        '<html><body><form id="search-form">'
+        + "".join(select_html)
+        + "</form>"
+        + f'<table id="id-table-results"><thead><tr>{intestazioni}</tr></thead>'
+        + f"<tbody>{corpo}</tbody></table></body></html>"
+    )

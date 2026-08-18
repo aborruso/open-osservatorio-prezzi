@@ -51,6 +51,18 @@ osservaprezzi values ortofrutta-eu market --agent
 
 I domini cambiano davvero: nel 2026 `consumo` espone sei mesi, i mercati italiani otto; gennaio 2021 ha cinque settimane, maggio 2025 quattro.
 
+### `find <collezione> <testo>`
+
+Cerca fra i prodotti (`consumo`) o le specie (ortofrutta) e restituisce la categoria di appartenenza.
+
+```bash
+osservaprezzi find consumo salmone --agent
+osservaprezzi find consumo "pane fresco" --agent | jq -r '.matches[].category'
+osservaprezzi find ortofrutta-it pomodor --agent
+```
+
+La prima invocazione costruisce l'indice con una richiesta per categoria; poi risponde dalla cache. `--refresh` lo ricostruisce. Il campo `source` vale sempre `observed` e `observed_with` dichiara provincia e periodo di riferimento: non è un catalogo universale.
+
 ## Recupero
 
 ### `get <collezione> [filtri]`

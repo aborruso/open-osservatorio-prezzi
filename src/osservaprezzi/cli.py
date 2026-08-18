@@ -27,6 +27,7 @@ from .archive import (
     temporal_expansion,
 )
 from .cache import MetadataCache
+from .catalogo import costruisci, risolvi_categoria
 from .client import Client
 from .collections import COLLECTIONS, Collection, get_collection
 from .gate import DEFAULT_LOCK_TIMEOUT
@@ -445,6 +446,78 @@ def get(
 
 @app.command()
 @handle_errors
+def find(
+    collection_id: str = typer.Argument(..., metavar="COLLEZIONE"),
+    text: str = typer.Argument(..., metavar="TESTO"),
+    json_output: bool = typer.Option(False, "--json", help="Output JSON."),
+    agent: bool = typer.Option(False, "--agent", help=H_AGENT),
+    csv_output: bool = typer.Option(False, "--csv", help="Output CSV."),
+    output: Optional[Path] = typer.Option(None, "--output", help="Scrive su file."),
+    refresh: bool = typer.Option(False, "--refresh", help="Ricostruisce il catalogo."),
+    timeout: float = typer.Option(DEFAULT_TIMEOUT, "--timeout"),
+    retries: int = typer.Option(DEFAULT_RETRIES, "--retries"),
+    lock_timeout: float = typer.Option(
+        DEFAULT_LOCK_TIMEOUT, "--lock-timeout", help=H_LOCK_TIMEOUT
+    ),
+    verbose: bool = typer.Option(False, "--verbose", help="Diagnostica su stderr."),
+) -> None:
+    """Cerca un prodotto e dice in quale categoria si trova.
+
+    Il portale non espone il prodotto come filtro, quindi la categoria è
+    l'unica cosa che resta da indovinare: questo comando la trova. Il catalogo
+    viene costruito una volta interrogando le categorie di una cella di
+    riferimento e poi resta in cache.
+
+    \b
+    Esempi:
+      osservaprezzi find consumo salmone
+      osservaprezzi find consumo "pane fresco" --agent
+      osservaprezzi find ortofrutta-it pomodori
+
+    I risultati sono osservati, non dichiarati: valgono per il contesto
+    indicato in `observed_with` e altrove possono cambiare.
+    """
+    collection = get_collection(collection_id)
+    client, cache, fetcher = _make_client(
+        timeout, retries, 0.0, refresh, verbose, lock_timeout
+    )
+    try:
+        catalogo = costruisci(client, collection)
+        cache.flush()
+    finally:
+        fetcher.close()
+
+    trovate = catalogo.cerca(text)
+    if not trovate:
+        raise err.NoData(
+            f"nessun risultato per {text!r}",
+            collection=collection.id,
+            observed_with=catalogo.context,
+            hint=f"il catalogo contiene {len(catalogo.voci)} voci; prova un testo più corto",
+        )
+
+    records = [
+        {catalogo.field: v.value, catalogo.dimension: v.parent, "label": v.parent_label}
+        for v in trovate
+    ]
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "collection": collection.id,
+        "query": text,
+        "source": "observed",
+        "observed_with": catalogo.context,
+        "count": len(records),
+        "matches": records,
+        "next_step": (
+            f"osservaprezzi get {collection.id} "
+            f"--{catalogo.dimension} <valore> <altri filtri>"
+        ),
+    }
+    _emit(payload, records, list(records[0]), json_output, csv_output, output)
+
+
+@app.command()
+@handle_errors
 def run(
     query_file: Path = typer.Argument(..., metavar="QUERY.YAML"),
     output: Optional[Path] = typer.Option(None, "--output", help="Scrive su file."),
@@ -567,16 +640,28 @@ def archive(
             parameter="format",
             allowed=["csv", "jsonl"],
         )
-    if product and collection.id == "consumo" and "category" not in filters:
-        raise err.InvalidParameter(
-            "il filtro prodotto richiede anche la categoria",
-            parameter="product",
-            hint=f"osservaprezzi values {collection.id} category",
-        )
-
     client, cache, fetcher = _make_client(timeout, retries, pause, refresh, verbose, lock_timeout)
     try:
-        plan = build_plan(client, collection, filters, list(all_dimensions), product)
+        # Il prodotto non è un filtro del portale e vive dentro una categoria:
+        # invece di pretendere che l'utente la conosca, la ricaviamo dal
+        # catalogo quando la corrispondenza è una sola. Se è ambigua l'errore
+        # elenca le possibilità, che vengono dai dati.
+        risolto = product
+        catalogo_usato = None
+        if product and collection.catalog is not None:
+            dimensione = collection.catalog.dimension
+            if dimensione not in filters and dimensione not in all_dimensions:
+                valore, risolto = risolvi_categoria(client, collection, product)
+                filters[dimensione] = valore
+                catalogo_usato = {dimensione: valore, "product": risolto}
+                if not json_output:
+                    print(
+                        f"{collection.catalog.label} risolto dal catalogo: "
+                        f"{risolto!r} in {dimensione}={valore}",
+                        file=sys.stderr,
+                    )
+
+        plan = build_plan(client, collection, filters, list(all_dimensions), risolto)
         cache.flush()
 
         if plan.request_count > max_requests:
@@ -602,6 +687,7 @@ def archive(
                 "pause_seconds": pause,
                 "notes": list(collection.notes),
                 "temporal_expansion": avviso,
+                "resolved_from_catalog": catalogo_usato,
             }
             if json_output:
                 render.write(render.to_json(payload), output=None)
@@ -692,6 +778,7 @@ def agent_context(
             "osservaprezzi catalog",
             "osservaprezzi describe <collezione>",
             "osservaprezzi values <collezione> <dimensione> [filtri genitori]",
+            "osservaprezzi find <collezione> <testo>  # se non sai in quale categoria sta un prodotto",
             "osservaprezzi get <collezione> <tutti i filtri>",
         ],
         "collections": [
@@ -729,6 +816,14 @@ def agent_context(
                 "name": "values",
                 "purpose": "valori ammessi per una dimensione",
                 "example": "osservaprezzi values consumo month --year 2025 --agent",
+            },
+            {
+                "name": "find",
+                "purpose": (
+                    "cerca un prodotto e dice in quale categoria si trova; "
+                    "risultati osservati in una cella di riferimento"
+                ),
+                "example": "osservaprezzi find consumo salmone --agent",
             },
             {
                 "name": "get",
@@ -771,6 +866,7 @@ def agent_context(
             "un filtro non applicato dal portale è un errore, non un risultato vuoto",
             "ogni record conserva collection, source_url e retrieved_at",
             "gli archivi non partono senza un piano entro --max-requests",
+            "il catalogo dei prodotti è osservato in una cella di riferimento, non dichiarato dal portale",
         ],
     }
     render.write(

@@ -57,13 +57,23 @@ class MetadataCache:
             return None
         return entry
 
-    def set(self, key: str, values: list[dict[str, str]], source_url: str, fetched_at: str) -> None:
+    def set(
+        self,
+        key: str,
+        values: list[dict[str, str]],
+        source_url: str,
+        fetched_at: str,
+        extra: dict[str, Any] | None = None,
+    ) -> None:
         data = self._load()
         data[key] = {
             "values": values,
             "source_url": source_url,
             "fetched_at": fetched_at,
             "expires_at": time.time() + self.ttl,
+            # Alcune voci hanno bisogno di dire in quale contesto sono state
+            # osservate: senza, sarebbero indistinguibili da un dominio fisso.
+            **(extra or {}),
         }
 
     def flush(self) -> None:

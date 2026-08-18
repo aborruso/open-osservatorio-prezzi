@@ -16,7 +16,7 @@ description: >-
   provincia. Non usarla per serie storiche o per l'andamento dell'inflazione,
   che sono indici ISTAT e si prendono via SDMX.
 license: MIT
-compatibility: Richiede la CLI `osservaprezzi` 0.3.0 o successiva (pacchetto PyPI `openosservaprezzi`) e accesso a osservaprezzi.mise.gov.it
+compatibility: Richiede la CLI `osservaprezzi` 0.4.0 o successiva (pacchetto PyPI `openosservaprezzi`) e accesso a osservaprezzi.mise.gov.it
 metadata:
   author: aborruso
   version: "1.1"
@@ -68,6 +68,18 @@ Ogni riga porta con sé tre codifiche territoriali che il portale non espone, ag
 Funziona anche al contrario: `--province` accetta il codice al posto del nome, quindi `082`, `ITG12`, `PA` e `Palermo` chiedono la stessa provincia. Se l'utente ti dà un codice, passalo direttamente invece di convertirlo a mano.
 
 Servono per unire questi prezzi ad altre fonti — popolazione, redditi, confini, dataflow SDMX — senza costruire a mano una tabella di conversione. Quando riporti un join, usa il codice giusto per la fonte di destinazione: se una provincia grande risulta senza corrispondenza, quasi sempre è perché stai usando l'una al posto dell'altra. Per i mercati ortofrutticoli questi campi non esistono, perché un mercato non è un'unità amministrativa e nessun codice viene inventato.
+
+## Se non sai in quale categoria sta un prodotto
+
+Il portale non espone il prodotto come filtro: sta dentro una categoria, e indovinarla è l'errore più facile. Chiedilo:
+
+```bash
+osservaprezzi find consumo salmone --agent
+```
+
+Restituisce prodotto, categoria e il contesto in cui la lista è stata osservata (`observed_with`). Negli archivi puoi anche saltare il passaggio: `--product "pane fresco"` completa la categoria da solo quando la corrispondenza è unica, e quando è ambigua l'errore elenca le possibilità — riportale all'utente invece di sceglierne una.
+
+Ricorda che quell'elenco è osservato in una cella di riferimento: un prodotto assente lì può esistere altrove, e viceversa.
 
 ## Il percorso: scoprire prima di chiedere
 

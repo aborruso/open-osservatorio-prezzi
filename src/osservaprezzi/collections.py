@@ -31,6 +31,23 @@ class Column:
 
 
 @dataclass(frozen=True)
+class CatalogSpec:
+    """Come costruire il catalogo dei prodotti di una collezione.
+
+    Il portale non espone il prodotto come filtro: per sapere cosa esiste
+    bisogna interrogare una cella e leggere le righe. Questa configurazione dice
+    quale dimensione percorrere, quale campo indicizzare e in quale contesto
+    farlo, così la ricerca resta una funzione sola per tutte le collezioni.
+    """
+
+    dimension: str
+    field: str
+    context: dict[str, str]
+    label: str
+    label_plural: str
+
+
+@dataclass(frozen=True)
 class Collection:
     id: str
     title: str
@@ -43,6 +60,7 @@ class Collection:
     # Campi non presenti nella tabella sorgente, aggiunti dalla CLI per rendere
     # i record incrociabili con altre fonti (codici territoriali ISTAT).
     derived: tuple[Column, ...] = field(default_factory=tuple)
+    catalog: CatalogSpec | None = None
 
     @property
     def url(self) -> str:
@@ -136,6 +154,15 @@ CONSUMO = Collection(
     ),
     natural_key=("year", "month", "province", "category", "product"),
     notes=(COMPARABILITY_WARNING,),
+    catalog=CatalogSpec(
+        dimension="category",
+        field="product",
+        # Roma rileva il paniere più ampio: come indice di ricerca è il
+        # riferimento che lascia fuori meno prodotti.
+        context={"province": "Roma"},
+        label="prodotto",
+        label_plural="prodotti",
+    ),
     derived=(
         Column("province_istat", "Codice ISTAT della provincia (storico)"),
         Column("province_uts", "Codice ISTAT dell'unità territoriale sovracomunale"),
@@ -159,6 +186,13 @@ ORTOFRUTTA_IT = Collection(
         Column("price_max", "Prezzo Massimo", numeric=True),
     ),
     natural_key=_ORTOFRUTTA_KEY,
+    catalog=CatalogSpec(
+        dimension="group",
+        field="species",
+        context={"market": "ROMA"},
+        label="specie",
+        label_plural="specie",
+    ),
 )
 
 ORTOFRUTTA_EU = Collection(
@@ -172,6 +206,13 @@ ORTOFRUTTA_EU = Collection(
     dimensions=_ORTOFRUTTA_DIMENSIONS,
     columns=_ORTOFRUTTA_EU_DESCRIPTORS + (Column("price", "PREZZO", numeric=True),),
     natural_key=_ORTOFRUTTA_KEY,
+    catalog=CatalogSpec(
+        dimension="group",
+        field="species",
+        context={"market": "PARIGI"},
+        label="specie",
+        label_plural="specie",
+    ),
 )
 
 COLLECTIONS: dict[str, Collection] = {

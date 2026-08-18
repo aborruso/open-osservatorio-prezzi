@@ -113,6 +113,24 @@ osservaprezzi values ortofrutta-it week --year 2021 --month 1
 
 Gennaio 2021 ha cinque settimane, maggio 2025 ne ha quattro: è il portale a dirlo.
 
+### In quale categoria sta quello che cerco?
+
+È l'unica cosa che restava da indovinare: il portale non espone il prodotto come filtro, quindi bisogna sapere che il salmone sta negli «ittici» e il pane negli «alimentari». Ora lo chiedi:
+
+```bash
+osservaprezzi find consumo salmone
+```
+
+```
+product                   category  label
+------------------------  --------  ------
+Salmone Fresco (1000 Gr)  ittici    Ittici
+```
+
+La ricerca ignora accenti e maiuscole e accetta anche pezzi di nome. La prima volta costruisce un indice interrogando le categorie (una decina di secondi), poi risponde dalla cache in un istante.
+
+Un avvertimento che trovi anche nell'output: quell'elenco è **osservato**, non dichiarato. Viene da una provincia di riferimento e da un mese preciso — il campo `observed_with` te lo dice — e altrove il paniere può essere diverso.
+
 ### I dati
 
 ```bash
@@ -182,11 +200,13 @@ Qui lo strumento dà il meglio. Vuoi il prezzo di un prodotto in tutte le provin
 
 ```bash
 osservaprezzi archive consumo \
-  --year 2025 --month 5 --category altri_alim \
+  --year 2025 --month 5 \
   --all province \
-  --product "Pane Fresco Con Farina Di Grano (1000 Gr)" \
+  --product "pane fresco" \
   --output pane-maggio-2025
 ```
+
+Non serve più indicare la categoria né la descrizione completa: se il testo corrisponde a un solo prodotto, la CLI lo riconosce e completa il filtro da sola, dicendotelo. Se corrisponde a più prodotti, l'errore li elenca invece di scegliere al posto tuo.
 
 Prima di partire puoi vedere quanto costerà, senza chiedere niente al portale:
 

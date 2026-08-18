@@ -231,7 +231,12 @@ def test_limite_di_richieste_blocca_l_avvio():
     assert errore["details"]["limit"] == 10
 
 
-def test_prodotto_senza_categoria_e_rifiutato():
+def test_espandere_tutte_le_categorie_resta_impedito_dal_limite():
+    """Il prodotto ora si risolve da solo, ma l'espansione implicita no.
+
+    Chiedere province e categorie insieme costerebbe 384 richieste per un solo
+    periodo: il limite le blocca prima di partire.
+    """
     result = runner.invoke(
         cli_module.app,
         [
@@ -251,7 +256,9 @@ def test_prodotto_senza_categoria_e_rifiutato():
         ],
     )
     assert result.exit_code == 2
-    assert json.loads(result.stderr)["details"]["parameter"] == "product"
+    errore = json.loads(result.stderr)
+    assert errore["details"]["parameter"] == "max-requests"
+    assert errore["details"]["planned"] > 100
 
 
 def test_latest_registra_i_default_nella_provenienza(monkeypatch, tmp_path):
@@ -423,3 +430,45 @@ def test_le_opzioni_filtro_dichiarano_la_collezione():
     testo = _testo_help(result)
     assert "Solo consumo." in testo
     assert "Solo ortofrutta-it e ortofrutta-eu." in testo
+
+
+def test_find_dichiara_che_i_risultati_sono_osservati(monkeypatch, tmp_path):
+    import httpx
+
+    from osservaprezzi.cache import MetadataCache as Cache
+    from osservaprezzi.client import Client as ClientClass
+    from osservaprezzi.collections import CONSUMO
+
+    from .conftest import pagina_echo
+
+    domini = {
+        "year": ["2025"], "month": ["5"],
+        "province": ["Roma"], "category": ["ittici", "energia"],
+    }
+    paniere = {"ittici": ["Salmone Fresco (1000 Gr)"], "energia": ["Gas GPL (1 L)"]}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        filtri = {
+            d.name: v
+            for d in CONSUMO.dimensions
+            if (v := dict(request.url.params).get(d.html_name)) is not None
+        }
+        righe = [[p, "1", "2", "1.5", "x"] for p in paniere.get(filtri.get("category", ""), [])]
+        return httpx.Response(200, text=pagina_echo(CONSUMO, filtri, domini, righe))
+
+    def make_client(timeout, retries, pause, refresh, verbose, lock_timeout=0):
+        cache = Cache(tmp_path / "find")
+        fetcher = Fetcher(client=httpx.Client(transport=httpx.MockTransport(handler)), verbose=verbose)
+        return ClientClass(fetcher, cache, refresh=refresh), cache, fetcher
+
+    monkeypatch.setattr(cli_module, "_make_client", make_client)
+
+    result = runner.invoke(cli_module.app, ["find", "consumo", "salmone", "--agent"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["source"] == "observed"
+    assert payload["observed_with"]["province"] == "Roma"
+    assert payload["matches"][0]["category"] == "ittici"
+
+    vuoto = runner.invoke(cli_module.app, ["find", "consumo", "monopattino", "--agent"])
+    assert vuoto.exit_code == 3

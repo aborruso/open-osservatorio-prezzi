@@ -2,6 +2,13 @@
 
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/); le versioni seguono il [versionamento semantico](https://semver.org/lang/it/).
 
+## [0.4.0] — 2026-08-18
+
+### Aggiunto
+
+- Comando `find`: cerca un prodotto (o una specie, per l'ortofrutta) e dice in quale categoria si trova. Il portale non espone il prodotto come filtro, quindi era l'unico passaggio in cui bisognava indovinare. L'indice viene costruito una volta interrogando le categorie di una cella di riferimento e resta in cache; ogni risposta dichiara il contesto di osservazione in `observed_with`, perché il paniere cambia da provincia a provincia.
+- `--product` completa da solo la categoria quando la corrispondenza è unica, e accetta anche una parte del nome: `--product "pane fresco"` basta. Se il testo è ambiguo l'errore elenca le corrispondenze trovate nei dati.
+
 ## [0.3.0] — 2026-08-18
 
 ### Aggiunto
