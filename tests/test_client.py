@@ -107,3 +107,9 @@ def test_servizio_indisponibile_dopo_i_retry(tmp_path):
         client.get(CONSUMO, CONSUMO_FILTERS)
     assert info.value.retryable is True
     assert info.value.exit_code == 5
+
+
+def test_pagina_con_filtro_rifiutato_non_popola_la_cache(client):
+    with pytest.raises(InvalidParameter):
+        client.get(CONSUMO, {**CONSUMO_FILTERS, "province": "Atlantide"})
+    assert client.cache._load() == {}

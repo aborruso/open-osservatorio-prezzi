@@ -1,5 +1,12 @@
 # Log
 
+## 2026-08-18
+
+- Completata la prima versione: verificati sul campo `run` e `archive`, aggiunti i test di parità, contratto e archivio (57 test verdi).
+- Eseguito l'archivio di accettazione su 64 province: 60 righe, nessun duplicato, manifest `complete` conservato in `docs/evidence/`.
+- Corretto un difetto della cache: i domini venivano memorizzati anche da pagine con filtri rifiutati.
+- Allineati `docs/evaluation.md` e `tasks/todo.md` con le evidenze e la revisione dei dieci criteri di accettazione.
+
 ## 2026-08-17
 
 - Tracciato il traffico del portale con `agent-browser`: unica GET del documento, nessuna XHR di dati, endpoint ausiliario ancora non risolvibile.

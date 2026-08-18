@@ -56,14 +56,17 @@ class Client:
         response = self.fetcher.get(collection.url, params or None)
         document = parse_document(response.text)
         selects = parse_form(document)
-        page = Page(document, selects, response.url, response.retrieved_at)
-        self._store_domains(collection, filters, page)
-        return page
+        return Page(document, selects, response.url, response.retrieved_at)
 
     def _store_domains(
         self, collection: Collection, filters: dict[str, str], page: Page
     ) -> None:
-        """Memorizza i domini osservati nella pagina, per il contesto richiesto."""
+        """Memorizza i domini osservati nella pagina, per il contesto richiesto.
+
+        Va invocato solo dopo aver verificato che il portale abbia davvero
+        applicato i filtri: una pagina che ricade sui valori predefiniti
+        descrive un contesto diverso da quello richiesto.
+        """
         for dimension in collection.dimensions:
             select = page.selects.get(dimension.html_name)
             if select is None:
@@ -118,6 +121,7 @@ class Client:
 
         page = self.fetch_page(collection, context)
         self._reject_unapplied(collection, context, page)
+        self._store_domains(collection, context, page)
         select = page.selects.get(dimension.html_name)
         if select is None:
             raise ContractChanged(
@@ -145,6 +149,7 @@ class Client:
     def latest(self, collection: Collection) -> dict[str, str]:
         """Valori proposti dal portale come predefiniti, usati solo su richiesta."""
         page = self.fetch_page(collection, {})
+        self._store_domains(collection, {}, page)
         selected: dict[str, str] = {}
         for dimension in collection.dimensions:
             select = page.selects.get(dimension.html_name)
@@ -170,6 +175,7 @@ class Client:
 
         page = self.fetch_page(collection, ordered)
         self._reject_unapplied(collection, ordered, page)
+        self._store_domains(collection, ordered, page)
 
         rows = parse_table(page.document, collection)
         if not rows:

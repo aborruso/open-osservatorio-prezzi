@@ -1,0 +1,937 @@
+{
+  "schema_version": 1,
+  "tool": "osservaprezzi/0.1.0",
+  "status": "complete",
+  "started_at": "2026-08-18T06:22:34Z",
+  "finished_at": "2026-08-18T06:25:00Z",
+  "collection": "consumo",
+  "filters": {
+    "year": "2025",
+    "month": "5",
+    "category": "altri_alim"
+  },
+  "expanded": {
+    "province": [
+      "Alessandria",
+      "Ancona",
+      "Aosta",
+      "Arezzo",
+      "Ascoli Piceno",
+      "Avellino",
+      "Bari",
+      "Belluno",
+      "Benevento",
+      "Bergamo",
+      "Biella",
+      "Bologna",
+      "Bolzano",
+      "Brescia",
+      "Cagliari",
+      "Catanzaro",
+      "Cosenza",
+      "Cremona",
+      "Cuneo",
+      "Ferrara",
+      "Firenze",
+      "Forli",
+      "Genova",
+      "Gorizia",
+      "Grosseto",
+      "Lecco",
+      "Livorno",
+      "Lodi",
+      "Lucca",
+      "Macerata",
+      "Mantova",
+      "Messina",
+      "Milano",
+      "Modena",
+      "Napoli",
+      "Novara",
+      "Padova",
+      "Palermo",
+      "Parma",
+      "Perugia",
+      "Pescara",
+      "Piacenza",
+      "Pistoia",
+      "Pordenone",
+      "Ravenna",
+      "Reggio Calabria",
+      "Reggio Emilia",
+      "Rimini",
+      "Roma",
+      "Rovigo",
+      "Sassari",
+      "Siena",
+      "Siracusa",
+      "Terni",
+      "Torino",
+      "Trento",
+      "Treviso",
+      "Trieste",
+      "Udine",
+      "Varese",
+      "Venezia",
+      "Vercelli",
+      "Verona",
+      "Vicenza"
+    ]
+  },
+  "product_filter": {
+    "value": "Pane Fresco Con Farina Di Grano (1000 Gr)",
+    "rule": "confronto esatto dopo casefold e compattazione degli spazi (normalize_product)"
+  },
+  "natural_key": [
+    "year",
+    "month",
+    "province",
+    "category",
+    "product"
+  ],
+  "data_file": "data.csv",
+  "requests": {
+    "planned": 64,
+    "completed": 64,
+    "failed": 0
+  },
+  "row_count": 60,
+  "results": [
+    {
+      "id": "category=altri_alim&month=5&province=Alessandria&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Alessandria",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Alessandria&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:35Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Ancona&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Ancona",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Ancona&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:37Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Aosta&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Aosta",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Aosta&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:40Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Arezzo&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Arezzo",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Arezzo&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:42Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Ascoli Piceno&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Ascoli Piceno",
+        "category": "altri_alim"
+      },
+      "status": "no_match",
+      "rows": 0,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Ascoli+Piceno&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:45Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Avellino&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Avellino",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Avellino&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:47Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Bari&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Bari",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Bari&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:49Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Belluno&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Belluno",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Belluno&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:52Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Benevento&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Benevento",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Benevento&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:54Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Bergamo&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Bergamo",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Bergamo&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:56Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Biella&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Biella",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Biella&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:22:58Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Bologna&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Bologna",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Bologna&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:01Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Bolzano&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Bolzano",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Bolzano&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:03Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Brescia&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Brescia",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Brescia&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:05Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Cagliari&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Cagliari",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Cagliari&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:07Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Catanzaro&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Catanzaro",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Catanzaro&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:10Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Cosenza&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Cosenza",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Cosenza&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:12Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Cremona&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Cremona",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Cremona&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:14Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Cuneo&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Cuneo",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Cuneo&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:16Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Ferrara&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Ferrara",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Ferrara&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:19Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Firenze&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Firenze",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Firenze&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:21Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Forli&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Forli",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Forli&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:24Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Genova&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Genova",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Genova&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:26Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Gorizia&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Gorizia",
+        "category": "altri_alim"
+      },
+      "status": "no_match",
+      "rows": 0,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Gorizia&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:28Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Grosseto&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Grosseto",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Grosseto&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:30Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Lecco&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Lecco",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Lecco&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:33Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Livorno&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Livorno",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Livorno&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:35Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Lodi&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Lodi",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Lodi&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:37Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Lucca&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Lucca",
+        "category": "altri_alim"
+      },
+      "status": "no_match",
+      "rows": 0,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Lucca&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:39Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Macerata&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Macerata",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Macerata&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:42Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Mantova&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Mantova",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Mantova&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:44Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Messina&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Messina",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Messina&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:46Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Milano&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Milano",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Milano&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:49Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Modena&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Modena",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Modena&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:51Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Napoli&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Napoli",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Napoli&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:53Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Novara&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Novara",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Novara&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:56Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Padova&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Padova",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Padova&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:23:58Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Palermo&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Palermo",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Palermo&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:00Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Parma&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Parma",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Parma&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:02Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Perugia&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Perugia",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Perugia&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:04Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Pescara&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Pescara",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Pescara&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:07Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Piacenza&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Piacenza",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Piacenza&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:09Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Pistoia&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Pistoia",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Pistoia&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:11Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Pordenone&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Pordenone",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Pordenone&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:13Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Ravenna&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Ravenna",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Ravenna&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:16Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Reggio Calabria&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Reggio Calabria",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Reggio+Calabria&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:18Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Reggio Emilia&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Reggio Emilia",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Reggio+Emilia&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:20Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Rimini&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Rimini",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Rimini&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:22Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Roma&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Roma",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Roma&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:25Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Rovigo&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Rovigo",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Rovigo&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:27Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Sassari&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Sassari",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Sassari&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:29Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Siena&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Siena",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Siena&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:33Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Siracusa&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Siracusa",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Siracusa&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:35Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Terni&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Terni",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Terni&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:37Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Torino&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Torino",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Torino&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:39Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Trento&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Trento",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Trento&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:42Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Treviso&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Treviso",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Treviso&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:44Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Trieste&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Trieste",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Trieste&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:46Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Udine&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Udine",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Udine&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:49Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Varese&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Varese",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Varese&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:51Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Venezia&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Venezia",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Venezia&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:53Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Vercelli&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Vercelli",
+        "category": "altri_alim"
+      },
+      "status": "no_match",
+      "rows": 0,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Vercelli&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:56Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Verona&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Verona",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Verona&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:24:58Z"
+    },
+    {
+      "id": "category=altri_alim&month=5&province=Vicenza&year=2025",
+      "filters": {
+        "year": "2025",
+        "month": "5",
+        "province": "Vicenza",
+        "category": "altri_alim"
+      },
+      "status": "ok",
+      "rows": 1,
+      "source_url": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo?ANNO=2025&MESE=5&f%5BPROVINCIA%5D=Vicenza&f%5BTIPO_RECORD_MISE%5D=altri_alim",
+      "retrieved_at": "2026-08-18T06:25:00Z"
+    }
+  ],
+  "notes": [
+    "La stessa descrizione di prodotto può riferirsi a combinazioni differenti di varietà, marca, confezione e punto vendita tra province o mesi: i valori raccolti non costituiscono automaticamente una serie storica comparabile."
+  ],
+  "source": "https://osservaprezzi.mise.gov.it/prezzi/livelli/beni-e-servizi-di-largo-consumo/archivio-rilevazioni-beni-e-servizi-di-largo-consumo"
+}

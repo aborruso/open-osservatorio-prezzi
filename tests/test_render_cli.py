@@ -1,0 +1,248 @@
+"""Contratti di output: equivalenza JSON/CSV, purezza di stdout, codici di uscita."""
+
+from __future__ import annotations
+
+import csv
+import io
+import json
+
+import pytest
+from typer.testing import CliRunner
+
+from osservaprezzi import cli as cli_module
+from osservaprezzi.cache import MetadataCache
+from osservaprezzi.client import Client
+from osservaprezzi.http import Fetcher
+from osservaprezzi.render import to_csv, to_json
+
+from .conftest import _fixture_for, read_fixture
+
+runner = CliRunner()
+
+
+@pytest.fixture(autouse=True)
+def cli_offline(monkeypatch, tmp_path):
+    """La CLI usa il trasporto di prova e una cache temporanea."""
+    import httpx
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, text=read_fixture(_fixture_for(request)))
+
+    def make_client(timeout, retries, pause, refresh, verbose):
+        http_client = httpx.Client(transport=httpx.MockTransport(handler))
+        fetcher = Fetcher(client=http_client, verbose=verbose)
+        cache = MetadataCache(tmp_path / "cache")
+        return Client(fetcher, cache, refresh=refresh), cache, fetcher
+
+    monkeypatch.setattr(cli_module, "_make_client", make_client)
+
+
+GET_CONSUMO = [
+    "get",
+    "consumo",
+    "--year",
+    "2025",
+    "--month",
+    "5",
+    "--province",
+    "Roma",
+    "--category",
+    "energia",
+]
+
+
+def test_json_e_csv_rappresentano_gli_stessi_record():
+    as_json = runner.invoke(cli_module.app, GET_CONSUMO + ["--json"])
+    as_csv = runner.invoke(cli_module.app, GET_CONSUMO + ["--csv"])
+    assert as_json.exit_code == 0 and as_csv.exit_code == 0
+
+    records = json.loads(as_json.stdout)["records"]
+    righe = list(csv.DictReader(io.StringIO(as_csv.stdout)))
+    assert len(records) == len(righe)
+    for atteso, riga in zip(records, righe):
+        for campo, valore in atteso.items():
+            if valore is None:
+                assert riga[campo] == ""
+            elif isinstance(valore, float):
+                assert riga[campo] == repr(valore)
+            else:
+                assert riga[campo] == str(valore)
+
+
+def test_i_valori_nulli_sopravvivono_nei_due_formati():
+    comando = [
+        "get",
+        "ortofrutta-it",
+        "--year",
+        "2025",
+        "--month",
+        "5",
+        "--week",
+        "2",
+        "--market",
+        "ROMA",
+        "--group",
+        "ORTAGGI",
+        "--limit",
+        "1",
+    ]
+    as_json = runner.invoke(cli_module.app, comando + ["--json"])
+    as_csv = runner.invoke(cli_module.app, comando + ["--csv"])
+    record = json.loads(as_json.stdout)["records"][0]
+    riga = next(csv.DictReader(io.StringIO(as_csv.stdout)))
+    assert record["variety"] is None
+    assert riga["variety"] == ""
+
+
+def test_verbose_non_sporca_stdout():
+    result = runner.invoke(cli_module.app, GET_CONSUMO + ["--csv", "--verbose"])
+    assert result.exit_code == 0
+    assert "GET " not in result.stdout
+    assert "GET " in result.stderr
+
+
+def test_errore_json_su_stderr_e_stdout_vuoto():
+    result = runner.invoke(
+        cli_module.app,
+        ["get", "consumo", "--year", "2025", "--json"],
+    )
+    assert result.exit_code == 2
+    assert result.stdout == ""
+    errore = json.loads(result.stderr)
+    assert errore["code"] == "invalid_parameter"
+    assert errore["retryable"] is False
+    assert errore["details"]["missing"] == ["month", "province", "category"]
+
+
+def test_nessun_dato_ha_codice_dedicato():
+    result = runner.invoke(
+        cli_module.app,
+        [
+            "get",
+            "ortofrutta-it",
+            "--year",
+            "2025",
+            "--month",
+            "5",
+            "--week",
+            "2",
+            "--market",
+            "CATANIA",
+            "--group",
+            "PRODOTTI SECCHI",
+            "--json",
+        ],
+    )
+    assert result.exit_code == 3
+    assert json.loads(result.stderr)["code"] == "no_data"
+
+
+def test_collezione_sconosciuta():
+    result = runner.invoke(cli_module.app, ["describe", "carburanti", "--json"])
+    assert result.exit_code == 2
+    assert json.loads(result.stderr)["code"] == "invalid_collection"
+
+
+def test_query_salvata_equivale_al_comando_get(tmp_path):
+    query = tmp_path / "q.yaml"
+    query.write_text(
+        "version: 1\ncollection: consumo\nfilters:\n"
+        "  year: 2025\n  month: 5\n  province: Roma\n  category: energia\n"
+        "format: json\n",
+        encoding="utf-8",
+    )
+    da_query = runner.invoke(cli_module.app, ["run", str(query)])
+    da_get = runner.invoke(cli_module.app, GET_CONSUMO + ["--json"])
+    assert da_query.exit_code == 0
+    assert (
+        json.loads(da_query.stdout)["records"] == json.loads(da_get.stdout)["records"]
+    )
+
+
+def test_scrittura_su_file(tmp_path):
+    destinazione = tmp_path / "dati.csv"
+    result = runner.invoke(
+        cli_module.app, GET_CONSUMO + ["--csv", "--output", str(destinazione)]
+    )
+    assert result.exit_code == 0
+    assert result.stdout == ""
+    assert destinazione.read_text(encoding="utf-8").startswith("year,month,")
+
+
+def test_catalog_elenca_le_tre_collezioni():
+    result = runner.invoke(cli_module.app, ["catalog", "--json"])
+    payload = json.loads(result.stdout)
+    assert [c["id"] for c in payload["collections"]] == [
+        "consumo",
+        "ortofrutta-it",
+        "ortofrutta-eu",
+    ]
+    assert payload["next_step"].startswith("osservaprezzi describe")
+
+
+def test_version_espone_schema():
+    result = runner.invoke(cli_module.app, ["version", "--json"])
+    payload = json.loads(result.stdout)
+    assert payload["schema_version"] == 1
+
+
+def test_ordine_stabile_dei_campi():
+    record = {"b": None, "a": 1.5}
+    assert to_csv([record]).splitlines()[0] == "b,a"
+    assert list(json.loads(to_json([record]))[0]) == ["b", "a"]
+
+
+ARCHIVIO_CONSUMO = [
+    "archive",
+    "consumo",
+    "--year",
+    "2025",
+    "--month",
+    "5",
+    "--category",
+    "energia",
+    "--all",
+    "province",
+]
+
+
+def test_piano_ispezionabile_senza_eseguirlo():
+    result = runner.invoke(cli_module.app, ARCHIVIO_CONSUMO + ["--dry-run", "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["plan"]["planned_requests"] == 64
+    assert payload["plan"]["expanded"]["province"][0] == "Alessandria"
+    assert payload["notes"]
+
+
+def test_limite_di_richieste_blocca_l_avvio():
+    result = runner.invoke(
+        cli_module.app, ARCHIVIO_CONSUMO + ["--max-requests", "10", "--json"]
+    )
+    assert result.exit_code == 2
+    errore = json.loads(result.stderr)
+    assert errore["details"]["planned"] == 64
+    assert errore["details"]["limit"] == 10
+
+
+def test_prodotto_senza_categoria_e_rifiutato():
+    result = runner.invoke(
+        cli_module.app,
+        [
+            "archive",
+            "consumo",
+            "--year",
+            "2025",
+            "--month",
+            "5",
+            "--all",
+            "province",
+            "--all",
+            "category",
+            "--product",
+            "Pane Fresco Con Farina Di Grano (1000 Gr)",
+            "--json",
+        ],
+    )
+    assert result.exit_code == 2
+    assert json.loads(result.stderr)["details"]["parameter"] == "product"

@@ -280,6 +280,53 @@ Per ogni collezione:
 - smoke test read-only con una singola query;
 - test `archive --dry-run` e test di ripresa con fixture, senza eseguire archivi completi sul servizio pubblico.
 
+## Verifiche aggiunte in fase di implementazione (2026-08-18)
+
+Le evidenze seguenti correggono o precisano quanto scritto sopra e sono state confermate durante la costruzione della CLI.
+
+### Paginazione
+
+Non esiste paginazione HTTP. Il server rende l'intera tabella e la paginazione visibile nel portale è realizzata lato client da DataTables, configurato nella pagina stessa. Il requisito RF-07 non ha quindi nulla da implementare: il codice tratta come risposta parziale soltanto un'interruzione del trasporto.
+
+### Echo dei filtri
+
+L'eco dei filtri è stata verificata su tutte le dimensioni delle tre collezioni, `SETTIMANA` inclusa. Un valore ammesso ritorna `selected` nel select corrispondente; un valore fuori dominio ritorna un select senza alcuna option selezionata. Questo rende affidabile la distinzione fra parametro non valido e assenza di dati:
+
+| Caso reale | Echo | Righe | Esito CLI |
+|---|---|---:|---|
+| `consumo` 2025-05 Roma energia | coerente | 6 | dati, uscita 0 |
+| `consumo` 2025-05 Atlantide energia | provincia non selezionata | 0 | `invalid_parameter`, uscita 2 |
+| `ortofrutta-it` 2025-05 s2 CATANIA PRODOTTI SECCHI | coerente | 0 | `no_data`, uscita 3 |
+
+### Parametro `submit`
+
+`submit=Applica` non è necessario: la stessa richiesta senza quel parametro restituisce identici stato, schema e numero di righe. La CLI non lo invia.
+
+### Intestazioni delle tabelle ortofrutticole
+
+I due portali ortofrutticoli non condividono le intestazioni: i mercati italiani scrivono `Specie`, `Varietà`, `Prezzo prev.`, quelli europei `SPECIE`, `VARIETA`, `PREZZO`, senza accento e in maiuscolo. Le colonne attese sono quindi dichiarate separatamente per collezione; una differenza di intestazione è trattata come contratto cambiato (uscita 4).
+
+Il numero di colonne dei mercati europei è otto, non nove: sette descrittori merceologici e un solo prezzo.
+
+### Domini dipendenti
+
+I domini dei mesi dipendono da anno **e** collezione, non dal solo anno: per `consumo` il 2026 espone sei mesi, per i mercati italiani otto. I domini delle settimane dipendono da anno e mese (gennaio 2021 ne espone cinque, maggio 2025 quattro). La CLI richiede quindi i filtri genitori per `values month` e `values week`.
+
+### Archivio di accettazione
+
+Eseguito il 2026-08-18 un archivio reale su tutte le 64 province, per maggio 2025, categoria `altri_alim`, prodotto «Pane Fresco Con Farina Di Grano (1000 Gr)»:
+
+- 64 richieste sequenziali con pausa di un secondo, durata complessiva circa due minuti e mezzo;
+- nessuna richiesta fallita, manifest chiuso come `complete`;
+- 60 province con corrispondenza del prodotto, 4 registrate come `no_match` (Ascoli Piceno, Gorizia, Lucca, Vercelli);
+- 60 righe, nessun duplicato sulla chiave naturale anno, mese, provincia, categoria, descrizione prodotto.
+
+Il manifest è conservato in `docs/evidence/archivio-pane-2025-05-manifest.json`.
+
+### Nota sulla dimensione territoriale
+
+La dimensione `province` di `consumo` è provinciale, non comunale: il portale espone 64 province di rilevazione sulle 107 italiane. I dati sono elaborati da Istat sull'indagine sui prezzi al consumo, con rilevazione tradizionale degli Uffici Comunali di Statistica, fonti amministrative e scanner data aggregati a livello provinciale. La pagina sconsiglia esplicitamente i confronti fra città e fra mesi.
+
 ## Decisione
 
 **GO**, con queste condizioni:

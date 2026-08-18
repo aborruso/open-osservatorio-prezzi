@@ -72,16 +72,41 @@ Fatto e verificato:
 
 Da fare alla ripresa, in ordine:
 
-1. test di `run` (query salvata equivalente al comando `get`) e di `query.py` (versione, chiavi e filtri sconosciuti);
-2. test di parità: ogni select dei form nelle fixture deve avere un parametro CLI corrispondente;
-3. test di equivalenza JSON/CSV e di purezza di `stdout` con `--verbose`;
-4. test di `archive`: piano, `--dry-run`, `--max-requests`, manifest, deduplicazione, `--resume`, filtro locale `--product`;
-5. prova reale di `archive` con espansione ridotta (poche province) prima dell'archivio di accettazione;
-6. archivio di accettazione a 64 province, eseguito una volta sola, manifest conservato come evidenza del criterio 10;
-7. allineare `docs/evaluation.md` con le evidenze nuove (assenza di paginazione HTTP, echo verificato su tutte le dimensioni, `submit=Applica` non necessario, intestazioni diverse fra i due portali ortofrutticoli);
-8. rilettura finale dei dieci criteri di accettazione del PRD.
+1. [fatto] test di `run` (query salvata equivalente al comando `get`) e di `query.py` (versione, chiavi e filtri sconosciuti);
+2. [fatto] test di parità: ogni select dei form nelle fixture deve avere un parametro CLI corrispondente;
+3. [fatto] test di equivalenza JSON/CSV e di purezza di `stdout` con `--verbose`;
+4. [fatto] test di `archive`: piano, `--dry-run`, `--max-requests`, manifest, deduplicazione, `--resume`, filtro locale `--product`;
+5. [fatto] prova reale di `archive` con espansione ridotta (poche province) prima dell'archivio di accettazione;
+6. [fatto] archivio di accettazione a 64 province, eseguito una volta sola, manifest conservato come evidenza del criterio 10;
+7. [fatto] allineare `docs/evaluation.md` con le evidenze nuove (assenza di paginazione HTTP, echo verificato su tutte le dimensioni, `submit=Applica` non necessario, intestazioni diverse fra i due portali ortofrutticoli);
+8. [fatto] rilettura finale dei dieci criteri di accettazione del PRD.
 
 Nota emersa in sessione: la dimensione `province` di `consumo` è provinciale, non comunale. Il portale espone 64 province di rilevazione sulle 107 italiane; i dati sono elaborati da Istat sull'indagine sui prezzi al consumo e il portale sconsiglia esplicitamente i confronti fra città e fra mesi.
+
+## Revisione della prima versione (2026-08-18)
+
+Verifica dei dieci criteri di accettazione del PRD.
+
+| # | Criterio | Esito | Evidenza |
+|---:|---|---|---|
+| 1 | `catalog` descrive stato e capacità delle tre collezioni | soddisfatto | `catalog --json` con `id`, `title`, `status`, `dimensions`, `url`; test `test_catalog_elenca_le_tre_collezioni` |
+| 2 | Ogni collezione dichiarata supportata supera i criteri di fattibilità | soddisfatto | query reali riuscite per le tre collezioni |
+| 3 | `describe`, `values` e `get` funzionano per almeno una query reale per collezione | soddisfatto | prove live su `consumo`, `ortofrutta-it`, `ortofrutta-eu` |
+| 4 | Parità del 100% dei controlli utente dei form | soddisfatto | `tests/test_parity.py`: 14 select mappati, unico controllo residuo è il pulsante di invio, non inviato |
+| 5 | Query salvata equivalente al comando `get` | soddisfatto | `test_query_salvata_equivale_al_comando_get` |
+| 6 | JSON e CSV superano i test di contratto | soddisfatto | `test_json_e_csv_rappresentano_gli_stessi_record`, `test_i_valori_nulli_sopravvivono_nei_due_formati` |
+| 7 | Errori e risposte parziali non confusi con risultati completi | soddisfatto | uscite 2, 3, 4, 5 verificate; archivio con richieste fallite chiuso `partial` e uscita 6 |
+| 8 | Nessun browser residente e nessun segreto conservato | soddisfatto | solo `httpx`; fixture prive di cookie, token e analytics |
+| 9 | La documentazione guida un agente dalla scoperta al recupero | soddisfatto | `README.md` più `next_step` in `catalog`, `describe` e `values` |
+| 10 | Archivio di prova deduplicato con manifest verificabile | soddisfatto | 64 richieste, 60 righe, 0 duplicati, manifest `complete` in `docs/evidence/archivio-pane-2025-05-manifest.json` |
+
+Difetto trovato e corretto durante la revisione: la cache dei metadati veniva popolata anche dalle pagine in cui il portale aveva rifiutato i filtri, memorizzando domini appartenenti a un contesto diverso da quello richiesto. Ora i domini sono memorizzati soltanto dopo la verifica dell'eco; la regressione è coperta da `test_pagina_con_filtro_rifiutato_non_popola_la_cache`.
+
+Limiti noti della prima versione:
+
+- il contratto resta HTML: un restyling del portale rompe il parsing, che però fallisce in modo esplicito con uscita 4 anziché restituire dati sbagliati;
+- la licenza dei dati di origine (Istat, Unioncamere, BMTI) resta da chiarire prima di ridistribuire archivi derivati;
+- `--product` è un filtro locale a confronto esatto: non trova varianti di descrizione fra province diverse, e le province senza corrispondenza sono registrate come `no_match` nel manifest.
 
 ## Domande irrisolte
 
