@@ -246,3 +246,88 @@ def test_prodotto_senza_categoria_e_rifiutato():
     )
     assert result.exit_code == 2
     assert json.loads(result.stderr)["details"]["parameter"] == "product"
+
+
+def test_latest_registra_i_default_nella_provenienza(monkeypatch, tmp_path):
+    import httpx
+
+    from osservaprezzi.cache import MetadataCache as Cache
+    from osservaprezzi.client import Client as ClientClass
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        # Pagina che espone come predefiniti gli stessi filtri che poi riflette.
+        return httpx.Response(200, text=read_fixture("consumo-ok"))
+
+    def make_client(timeout, retries, pause, refresh, verbose):
+        http_client = httpx.Client(transport=httpx.MockTransport(handler))
+        cache = Cache(tmp_path / "latest")
+        fetcher = Fetcher(client=http_client, verbose=verbose)
+        return ClientClass(fetcher, cache, refresh=refresh), cache, fetcher
+
+    monkeypatch.setattr(cli_module, "_make_client", make_client)
+    result = runner.invoke(
+        cli_module.app, ["get", "consumo", "--latest", "--csv", "--limit", "1"]
+    )
+    assert result.exit_code == 0
+    riga = next(csv.DictReader(io.StringIO(result.stdout)))
+    assert set(riga["defaults_used"].split(",")) == {
+        "year",
+        "month",
+        "province",
+        "category",
+    }
+
+
+def test_senza_latest_la_provenienza_non_dichiara_default():
+    result = runner.invoke(cli_module.app, GET_CONSUMO + ["--csv", "--limit", "1"])
+    riga = next(csv.DictReader(io.StringIO(result.stdout)))
+    assert riga["defaults_used"] == ""
+
+
+def test_archivio_parziale_esce_con_codice_dedicato(tmp_path, monkeypatch):
+    import httpx
+
+    from osservaprezzi.cache import MetadataCache as Cache
+    from osservaprezzi.client import Client as ClientClass
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if dict(request.url.params).get("f[GRUPPO]") == "ORTAGGI":
+            return httpx.Response(503, text="")
+        return httpx.Response(200, text=read_fixture(_fixture_for(request)))
+
+    def make_client(timeout, retries, pause, refresh, verbose):
+        http_client = httpx.Client(transport=httpx.MockTransport(handler))
+        fetcher = Fetcher(client=http_client, retries=0, verbose=verbose)
+        return ClientClass(fetcher, Cache(tmp_path / "c"), refresh=refresh), Cache(
+            tmp_path / "c"
+        ), fetcher
+
+    monkeypatch.setattr(cli_module, "_make_client", make_client)
+
+    destinazione = tmp_path / "archivio"
+    result = runner.invoke(
+        cli_module.app,
+        [
+            "archive",
+            "ortofrutta-eu",
+            "--year",
+            "2025",
+            "--month",
+            "5",
+            "--week",
+            "2",
+            "--market",
+            "PARIGI",
+            "--all",
+            "group",
+            "--output",
+            str(destinazione),
+            "--json",
+        ],
+    )
+    assert result.exit_code == 6
+    sommario = json.loads(result.stdout)
+    assert sommario["status"] == "partial"
+    assert sommario["requests"]["failed"] >= 1
+    manifest = json.loads((destinazione / "manifest.json").read_text("utf-8"))
+    assert manifest["status"] == "partial"

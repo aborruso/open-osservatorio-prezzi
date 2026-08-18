@@ -41,7 +41,7 @@ I domini dipendenti vanno chiesti con i filtri genitori: i mesi dipendono dall'a
 | `ortofrutta-it` | `--year --month --week --market --group` |
 | `ortofrutta-eu` | `--year --month --week --market --group` |
 
-`get` richiede tutti i filtri della collezione. Per usare i valori predefiniti del portale serve `--latest`, e i filtri così ricavati sono elencati in `defaults_used`.
+`get` richiede tutti i filtri della collezione. Per usare i valori predefiniti del portale serve `--latest`: i filtri così ricavati sono elencati nel campo `defaults_used`, presente sia nel JSON sia in ogni record esportato, così un CSV prodotto con i default resta distinguibile da uno con filtri espliciti.
 
 ## Output
 
@@ -49,6 +49,8 @@ I domini dipendenti vanno chiesti con i filtri genitori: i mesi dipendono dall'a
 - `--json`: oggetto documentato con `schema_version`, filtri, provenienza e `records`;
 - `--csv`: stesse righe e stessi valori nulli del JSON (cella vuota = `null`);
 - `--output <file>`: scrive su file.
+
+La vista tabella è pensata per la lettura umana e omette le colonne di provenienza (`collection`, `source_url`, `retrieved_at`, `defaults_used`), identiche su tutte le righe; JSON e CSV le riportano sempre.
 
 `stdout` contiene soltanto i dati. Progressi, avvisi ed errori vanno su `stderr`.
 

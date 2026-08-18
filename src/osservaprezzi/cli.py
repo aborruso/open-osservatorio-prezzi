@@ -83,7 +83,7 @@ def _collect_filters(collection: Collection, provided: dict[str, Any]) -> dict[s
     return filters
 
 
-PROVENANCE_FIELDS = ("collection", "source_url", "retrieved_at")
+PROVENANCE_FIELDS = ("collection", "source_url", "retrieved_at", "defaults_used")
 
 
 def _emit(
@@ -293,6 +293,12 @@ def get(
     finally:
         fetcher.close()
 
+    # RF-05F: l'uso dei valori predefiniti del portale resta visibile in ogni
+    # formato, non soltanto nel JSON.
+    origine = ",".join(defaults_used) or None
+    for record in result.records:
+        record["defaults_used"] = origine
+
     columns = list(result.records[0])
     payload = {
         "schema_version": SCHEMA_VERSION,
@@ -334,6 +340,9 @@ def run(
         cache.flush()
     finally:
         fetcher.close()
+
+    for record in result.records:
+        record["defaults_used"] = None
 
     columns = list(result.records[0])
     payload = {

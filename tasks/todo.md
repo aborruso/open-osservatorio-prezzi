@@ -100,7 +100,11 @@ Verifica dei dieci criteri di accettazione del PRD.
 | 9 | La documentazione guida un agente dalla scoperta al recupero | soddisfatto | `README.md` più `next_step` in `catalog`, `describe` e `values` |
 | 10 | Archivio di prova deduplicato con manifest verificabile | soddisfatto | 64 richieste, 60 righe, 0 duplicati, manifest `complete` in `docs/evidence/archivio-pane-2025-05-manifest.json` |
 
-Difetto trovato e corretto durante la revisione: la cache dei metadati veniva popolata anche dalle pagine in cui il portale aveva rifiutato i filtri, memorizzando domini appartenenti a un contesto diverso da quello richiesto. Ora i domini sono memorizzati soltanto dopo la verifica dell'eco; la regressione è coperta da `test_pagina_con_filtro_rifiutato_non_popola_la_cache`.
+Difetti trovati e corretti durante la revisione:
+
+- `--latest` non lasciava traccia nei record: il campo `defaults_used` compariva solo nel JSON, così un CSV prodotto con i valori predefiniti del portale era indistinguibile da uno con filtri espliciti (RF-05F). Ora il campo fa parte della provenienza di ogni record, in tutti i formati, ed è coperto da due test;
+- l'uscita 6 dell'archivio parziale era l'unico codice della tassonomia senza test: aggiunto `test_archivio_parziale_esce_con_codice_dedicato`, che verifica anche che il sommario venga scritto prima dell'uscita;
+- la cache dei metadati veniva popolata anche dalle pagine in cui il portale aveva rifiutato i filtri, memorizzando domini appartenenti a un contesto diverso da quello richiesto. Ora i domini sono memorizzati soltanto dopo la verifica dell'eco; la regressione è coperta da `test_pagina_con_filtro_rifiutato_non_popola_la_cache`.
 
 Limiti noti della prima versione:
 
