@@ -98,7 +98,8 @@ Tre regole che evitano quasi tutti gli errori:
 
 1. **I domini dipendenti richiedono i genitori.** I mesi dipendono dall'anno, le settimane da anno e mese. `values ortofrutta-it week` senza `--year` e `--month` è un errore, non un default: gennaio 2021 ha cinque settimane, maggio 2025 quattro.
 2. **`get` vuole tutti i filtri della collezione.** Non esistono valori impliciti; per usare quelli del portale serve `--latest`, che li dichiara nel campo `defaults_used` di ogni record.
-3. **Non inventare codici.** I nomi di province e mercati vanno presi da `values`. Se sbagli, l'errore ti restituisce la lista giusta — ma è una richiesta sprecata verso un servizio pubblico.
+3. **Non inventare valori.** I nomi di province e mercati vanno presi da `values`. Se sbagli, l'errore ti restituisce la lista giusta — ma è una richiesta sprecata verso un servizio pubblico.
+4. **La provincia si indica anche per codice.** `--province` accetta il nome (`Palermo`), il codice ISTAT (`082`), quello dell'unità territoriale (`282`), il NUTS3 (`ITG12`) e la sigla (`PA`): se l'utente o il dataset di partenza ti danno un codice, passalo così com'è invece di convertirlo a mano. Vale anche nelle query YAML e negli archivi. I mercati ortofrutticoli, invece, non hanno codici: lì serve il nome esatto.
 
 ## Leggere gli esiti
 
