@@ -191,7 +191,11 @@ def run_archive(
                 seen.add(key)
                 records.append(record)
 
-    columns = list(collection.dimension_names) + [c.name for c in collection.columns] + [
+    columns = (
+        list(collection.dimension_names)
+        + [c.name for c in collection.derived]
+        + [c.name for c in collection.columns]
+    ) + [
         "collection",
         "source_url",
         "retrieved_at",

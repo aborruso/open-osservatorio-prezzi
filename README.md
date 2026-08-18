@@ -151,6 +151,19 @@ year,month,province,category,product,price_min,price_max,price_avg,category_labe
 
 Con `--json` ottieni invece una struttura pronta per essere elaborata.
 
+### I codici ISTAT delle province
+
+Ogni riga di `consumo` porta con sé le codifiche territoriali, così il join con altre fonti — popolazione, redditi, confini geografici, dati SDMX — non richiede una tabella di conversione fatta a mano:
+
+```
+province,province_istat,province_uts,province_nuts3
+Roma,058,258,ITI43
+```
+
+Sono tre perché servono a cose diverse. `province_istat` è il codice provincia classico, quello usato nella gran parte dei dataset ISTAT; `province_uts` è il codice dell'unità territoriale sovracomunale, che **per le quindici città metropolitane è diverso** (Roma 058 e 258, Milano 015 e 215); `province_nuts3` è la codifica europea. Esporne uno solo avrebbe rotto in silenzio i join proprio sulle province più grandi.
+
+La corrispondenza è generata dal SITUAS dell'ISTAT ed è documentata in [`references/README.md`](references/README.md), inclusi i quattro nomi che il portale scrive diversamente (Aosta, Bolzano, Forlì, Reggio Emilia).
+
 ## Il pane in tutta Italia: gli archivi
 
 Qui lo strumento dà il meglio. Vuoi il prezzo di un prodotto in tutte le province? Non serve ripetere 64 comandi:

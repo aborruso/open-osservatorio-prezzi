@@ -1,0 +1,65 @@
+province,istat_code,uts_code,nuts3,istat_name,region,area,plate
+Alessandria,006,006,ITC18,Alessandria,Piemonte,Nord-ovest,AL
+Ancona,042,042,ITI32,Ancona,Marche,Centro,AN
+Aosta,007,007,ITC20,Valle d'Aosta/Vallée d'Aoste,Valle d'Aosta/Vallée d'Aoste,Nord-ovest,AO
+Arezzo,051,051,ITI18,Arezzo,Toscana,Centro,AR
+Ascoli Piceno,044,044,ITI34,Ascoli Piceno,Marche,Centro,AP
+Avellino,064,064,ITF34,Avellino,Campania,Sud,AV
+Bari,072,272,ITF47,Bari,Puglia,Sud,BA
+Belluno,025,025,ITH33,Belluno,Veneto,Nord-est,BL
+Benevento,062,062,ITF32,Benevento,Campania,Sud,BN
+Bergamo,016,016,ITC46,Bergamo,Lombardia,Nord-ovest,BG
+Biella,096,096,ITC13,Biella,Piemonte,Nord-ovest,BI
+Bologna,037,237,ITH55,Bologna,Emilia-Romagna,Nord-est,BO
+Bolzano,021,021,ITH10,Bolzano/Bozen,Trentino-Alto Adige/Südtirol,Nord-est,BZ
+Brescia,017,017,ITC47,Brescia,Lombardia,Nord-ovest,BS
+Cagliari,118,318,ITG2F,Cagliari,Sardegna,Isole,CA
+Catanzaro,079,079,ITF63,Catanzaro,Calabria,Sud,CZ
+Cosenza,078,078,ITF61,Cosenza,Calabria,Sud,CS
+Cremona,019,019,ITC4A,Cremona,Lombardia,Nord-ovest,CR
+Cuneo,004,004,ITC16,Cuneo,Piemonte,Nord-ovest,CN
+Ferrara,038,038,ITH56,Ferrara,Emilia-Romagna,Nord-est,FE
+Firenze,048,248,ITI14,Firenze,Toscana,Centro,FI
+Forli,040,040,ITH58,Forlì-Cesena,Emilia-Romagna,Nord-est,FC
+Genova,010,210,ITC33,Genova,Liguria,Nord-ovest,GE
+Gorizia,031,031,ITH43,Gorizia,Friuli-Venezia Giulia,Nord-est,GO
+Grosseto,053,053,ITI1A,Grosseto,Toscana,Centro,GR
+Lecco,097,097,ITC43,Lecco,Lombardia,Nord-ovest,LC
+Livorno,049,049,ITI16,Livorno,Toscana,Centro,LI
+Lodi,098,098,ITC49,Lodi,Lombardia,Nord-ovest,LO
+Lucca,046,046,ITI12,Lucca,Toscana,Centro,LU
+Macerata,043,043,ITI33,Macerata,Marche,Centro,MC
+Mantova,020,020,ITC4B,Mantova,Lombardia,Nord-ovest,MN
+Messina,083,283,ITG13,Messina,Sicilia,Isole,ME
+Milano,015,215,ITC4C,Milano,Lombardia,Nord-ovest,MI
+Modena,036,036,ITH54,Modena,Emilia-Romagna,Nord-est,MO
+Napoli,063,263,ITF33,Napoli,Campania,Sud,NA
+Novara,003,003,ITC15,Novara,Piemonte,Nord-ovest,NO
+Padova,028,028,ITH36,Padova,Veneto,Nord-est,PD
+Palermo,082,282,ITG12,Palermo,Sicilia,Isole,PA
+Parma,034,034,ITH52,Parma,Emilia-Romagna,Nord-est,PR
+Perugia,054,054,ITI21,Perugia,Umbria,Centro,PG
+Pescara,068,068,ITF13,Pescara,Abruzzo,Sud,PE
+Piacenza,033,033,ITH51,Piacenza,Emilia-Romagna,Nord-est,PC
+Pistoia,047,047,ITI13,Pistoia,Toscana,Centro,PT
+Pordenone,093,093,ITH41,Pordenone,Friuli-Venezia Giulia,Nord-est,PN
+Ravenna,039,039,ITH57,Ravenna,Emilia-Romagna,Nord-est,RA
+Reggio Calabria,080,280,ITF65,Reggio Calabria,Calabria,Sud,RC
+Reggio Emilia,035,035,ITH53,Reggio nell'Emilia,Emilia-Romagna,Nord-est,RE
+Rimini,099,099,ITH59,Rimini,Emilia-Romagna,Nord-est,RN
+Roma,058,258,ITI43,Roma,Lazio,Centro,RM
+Rovigo,029,029,ITH37,Rovigo,Veneto,Nord-est,RO
+Sassari,112,312,,Sassari,Sardegna,Isole,SS
+Siena,052,052,ITI19,Siena,Toscana,Centro,SI
+Siracusa,089,089,ITG19,Siracusa,Sicilia,Isole,SR
+Terni,055,055,ITI22,Terni,Umbria,Centro,TR
+Torino,001,201,ITC11,Torino,Piemonte,Nord-ovest,TO
+Trento,022,022,ITH20,Trento,Trentino-Alto Adige/Südtirol,Nord-est,TN
+Treviso,026,026,ITH34,Treviso,Veneto,Nord-est,TV
+Trieste,032,032,ITH44,Trieste,Friuli-Venezia Giulia,Nord-est,TS
+Udine,030,030,ITH42,Udine,Friuli-Venezia Giulia,Nord-est,UD
+Varese,012,012,ITC41,Varese,Lombardia,Nord-ovest,VA
+Venezia,027,227,ITH35,Venezia,Veneto,Nord-est,VE
+Vercelli,002,002,ITC12,Vercelli,Piemonte,Nord-ovest,VC
+Verona,023,023,ITH31,Verona,Veneto,Nord-est,VR
+Vicenza,024,024,ITH32,Vicenza,Veneto,Nord-est,VI

@@ -16,6 +16,7 @@ from .errors import ContractChanged, InvalidDimension, InvalidParameter, NoData
 from .forms import Option, Select, check_echo, parse_document, parse_form
 from .http import Fetcher
 from .parse import parse_table
+from .territori import codici
 
 
 @dataclass
@@ -188,9 +189,11 @@ class Client:
         if limit is not None:
             rows = rows[:limit]
 
+        derivati = self._derivati(collection, ordered)
         records = [
             {
                 **ordered,
+                **derivati,
                 **row,
                 "collection": collection.id,
                 "source_url": page.source_url,
@@ -205,6 +208,13 @@ class Client:
             source_url=page.source_url,
             retrieved_at=page.retrieved_at,
         )
+
+    @staticmethod
+    def _derivati(collection: Collection, filters: dict[str, str]) -> dict[str, str | None]:
+        """Codici territoriali ricavati dai filtri, quando la collezione li prevede."""
+        if not collection.derived:
+            return {}
+        return codici(filters.get("province", ""))
 
     # -- validazione -------------------------------------------------------
 

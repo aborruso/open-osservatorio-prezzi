@@ -40,6 +40,9 @@ class Collection:
     columns: tuple[Column, ...]
     natural_key: tuple[str, ...]
     notes: tuple[str, ...] = field(default_factory=tuple)
+    # Campi non presenti nella tabella sorgente, aggiunti dalla CLI per rendere
+    # i record incrociabili con altre fonti (codici territoriali ISTAT).
+    derived: tuple[Column, ...] = field(default_factory=tuple)
 
     @property
     def url(self) -> str:
@@ -133,6 +136,11 @@ CONSUMO = Collection(
     ),
     natural_key=("year", "month", "province", "category", "product"),
     notes=(COMPARABILITY_WARNING,),
+    derived=(
+        Column("province_istat", "Codice ISTAT della provincia (storico)"),
+        Column("province_uts", "Codice ISTAT dell'unità territoriale sovracomunale"),
+        Column("province_nuts3", "Codice NUTS3 2024"),
+    ),
 )
 
 ORTOFRUTTA_IT = Collection(

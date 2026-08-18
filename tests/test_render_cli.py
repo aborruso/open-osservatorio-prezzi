@@ -189,7 +189,7 @@ def test_catalog_elenca_le_tre_collezioni():
 def test_version_espone_schema():
     result = runner.invoke(cli_module.app, ["version", "--json"])
     payload = json.loads(result.stdout)
-    assert payload["schema_version"] == 1
+    assert payload["schema_version"] == 2
 
 
 def test_ordine_stabile_dei_campi():

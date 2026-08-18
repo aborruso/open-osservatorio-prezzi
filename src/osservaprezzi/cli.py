@@ -244,6 +244,9 @@ def describe(
                 {"name": c.name, "header": c.header, "numeric": c.numeric}
                 for c in collection.columns
             ],
+            "derived_columns": [
+                {"name": c.name, "description": c.header} for c in collection.derived
+            ],
             "natural_key": list(collection.natural_key),
             "coverage": {
                 "dimension": "year",
@@ -674,7 +677,7 @@ def agent_context(
                     }
                     for d in c.dimensions
                 ],
-                "columns": [c2.name for c2 in c.columns],
+                "columns": [c2.name for c2 in c.columns] + [d.name for d in c.derived],
                 "natural_key": list(c.natural_key),
                 "notes": list(c.notes),
             }

@@ -84,7 +84,9 @@ Passare un'opzione estranea alla collezione (per esempio `--market` su `consumo`
 
 ### Colonne prodotte
 
-`consumo`: `year, month, province, category, product, price_min, price_max, price_avg, category_label`
+`consumo`: `year, month, province, province_istat, province_uts, province_nuts3, category, product, price_min, price_max, price_avg, category_label`
+
+I tre campi `province_*` sono codifiche ISTAT aggiunte dalla CLI, non presenti nel portale: `province_istat` è il codice provincia classico (Roma `058`), `province_uts` quello dell'unità territoriale sovracomunale, diverso per le quindici città metropolitane (Roma `258`), `province_nuts3` la codifica europea. Servono per incrociare i prezzi con altre fonti territoriali; per un mercato ortofrutticolo non esistono, perché i mercati non sono unità amministrative.
 
 `ortofrutta-it`: `year, month, week, market, group, species, variety, size, grade, packaging, origin, unit, price_prevalent, price_min, price_max`
 
