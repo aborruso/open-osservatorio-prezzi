@@ -23,19 +23,21 @@ Si parte dal 2021. Per `consumo` ogni riga riporta prezzo minimo, massimo e medi
 Il modo più semplice, se hai [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uv tool install osservaprezzi
+uv tool install openosservaprezzi
 ```
+
+Il pacchetto si chiama `openosservaprezzi`, il comando che installa è `osservaprezzi`.
 
 Per provarlo senza installare nulla:
 
 ```bash
-uvx osservaprezzi catalog
+uvx --from openosservaprezzi osservaprezzi catalog
 ```
 
 Con pip:
 
 ```bash
-pip install osservaprezzi
+pip install openosservaprezzi
 ```
 
 Verifica che funzioni:

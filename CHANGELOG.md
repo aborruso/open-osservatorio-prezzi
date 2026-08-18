@@ -2,9 +2,9 @@
 
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/); le versioni seguono il [versionamento semantico](https://semver.org/lang/it/).
 
-## [0.1.0] — non ancora pubblicata
+## [0.1.0] — 2026-08-18
 
-Prima versione.
+Prima versione, pubblicata su PyPI come `openosservaprezzi`; il comando installato è `osservaprezzi`.
 
 ### Aggiunto
 

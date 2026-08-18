@@ -1,5 +1,5 @@
 [project]
-name = "osservaprezzi"
+name = "openosservaprezzi"
 version = "0.1.0"
 description = "CLI read-only per i dati pubblici dell'Osservatorio Prezzi"
 readme = "README.md"
