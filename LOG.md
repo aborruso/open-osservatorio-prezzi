@@ -2,6 +2,7 @@
 
 ## 2026-08-18
 
+- README: aggiunta la sezione sul valore dei dati, con il confronto fra pane (referenze eterogenee) e benzina (prodotto omogeneo) e la tabella delle analisi che reggono.
 - Aggiunti al PRD due principi fondativi: l'aiuto come contratto e l'accesso serializzato al servizio pubblico (RF-27…RF-38).
 - Aiuto autodescrittivo: esempi in ogni comando, opzioni che dichiarano collezione e dipendenze, comando `agent-context`, opzione `--agent`, `AGENTS.md`.
 - Introdotto un lock su file che impedisce esecuzioni parallele sulla stessa macchina, con intervallo minimo condiviso fra processi e `--lock-timeout`.

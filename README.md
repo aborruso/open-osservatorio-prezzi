@@ -6,6 +6,8 @@ Sul portale quei dati si consultano una pagina alla volta, scegliendo mese, prov
 
 **Cosa NON fa**: non inventa valori, non stima, non completa i buchi. Se un dato non è pubblicato, te lo dice.
 
+Prima di impostare un'analisi leggi [A cosa servono davvero questi dati](#a-cosa-servono-davvero-questi-dati): non tutti i confronti che sembrano possibili lo sono, e la differenza dipende dal prodotto.
+
 ## I dati disponibili
 
 | | Cosa contiene | Aggiornamento | Dettaglio |
@@ -214,13 +216,69 @@ osservaprezzi run ortaggi-roma.yaml --output ortaggi.csv
 
 È il modo più semplice per rifare la stessa estrazione il mese prossimo, o per condividerla con un collega.
 
-## Leggere i dati senza sbagliare
+## A cosa servono davvero questi dati
 
-Tre avvertenze che vengono dal portale stesso e che conviene prendere sul serio.
+Vale la pena saperlo prima di impostare un'analisi, perché il valore di questi numeri cambia molto a seconda di cosa si guarda.
 
-**Non sono serie storiche.** Sotto la stessa descrizione — «Pane Fresco Con Farina Di Grano» — possono esserci pani diversi per varietà, marca, confezione e punto vendita, e la composizione cambia da una provincia all'altra e da un mese all'altro. Confrontare Milano con Palermo, o maggio con giugno, porta a conclusioni sbagliate. Per l'andamento nel tempo la fonte corretta sono gli indici dei prezzi al consumo dell'Istat, non questi livelli.
+### Il limite da cui parte tutto
 
-**Le assenze significano «non rilevato».** Se un prodotto non compare per una provincia non vuol dire che lì non si venda: quel mese non è stato rilevato. Negli archivi queste situazioni sono registrate nel manifest, non nascoste.
+Una descrizione come «Pane Fresco Con Farina Di Grano (1000 Gr)» non identifica un prodotto: identifica una **categoria**. Dentro ci finiscono pani diversi per varietà, marca, confezione e negozio in cui sono stati rilevati — quella combinazione, nel linguaggio Istat, si chiama *referenza*. Ogni provincia campiona le proprie, e da un mese all'altro il campione può cambiare.
+
+Lo si vede nei dati stessi. Maggio 2025, stessa descrizione, stesso mese:
+
+| | minimo | massimo | medio |
+|---|---:|---:|---:|
+| Napoli | 2,00 | 2,99 | **2,42** |
+| Roma | 2,29 | 4,89 | **3,41** |
+| Palermo | 3,50 | 5,00 | **4,42** |
+| Milano | 2,99 | 7,00 | **4,97** |
+| Bologna | 3,99 | 7,80 | **5,23** |
+
+A Milano il pane più caro costa 2,3 volte il più economico, nella stessa città e nello stesso mese: quella dispersione interna è la prova che sotto l'etichetta ci sono prodotti differenti. Perciò la distanza fra Napoli e Bologna mescola due cose inseparabili — quanto costa il pane e quali pani sono finiti nel campione.
+
+Il portale lo dice esplicitamente: i confronti fra città e fra mesi «possono essere effettuati correttamente solo utilizzando gli indici dei prezzi al consumo».
+
+### Cosa regge comunque
+
+**La dispersione dentro una singola rilevazione.** Minimo, massimo e medio della stessa cella vengono dalla stessa rilevazione: confrontarli fra loro è legittimo. È anche l'informazione più concreta per chi compra — dice quanto conviene guardarsi intorno — e per chi osserva un mercato, perché misura quanto è differenziato.
+
+**I prodotti omogenei.** L'avvertenza morde dove la referenza è variabile; dove il prodotto è sempre lo stesso quasi sparisce. Benzina verde self, maggio 2025:
+
+| | medio |
+|---|---:|
+| Milano | 1,688 |
+| Bologna | 1,692 |
+| Napoli | 1,695 |
+| Palermo | 1,715 |
+
+Uno scarto dell'1,6% fra la prima e l'ultima, contro il più del doppio che separa le stesse città sul pane. La benzina verde è la benzina verde ovunque: niente varietà, niente marca artigianale, niente pezzatura. Sui carburanti il confronto territoriale regge.
+
+**L'ortofrutta all'ingrosso.** Lì specie, varietà, calibro, categoria, presentazione e origine sono colonne esplicite, non nascoste in una descrizione: sai esattamente cosa stai confrontando, quindi puoi confrontarlo.
+
+### Cosa non regge
+
+Classifiche fra città sugli alimentari e serie storiche di qualsiasi voce. Non è una cautela formale: sono conclusioni che i dati non sostengono. Per l'andamento nel tempo la fonte corretta sono gli indici dei prezzi al consumo dell'Istat (NIC, IPCA), disponibili via SDMX fino al dettaglio provinciale — costruiti confrontando ogni prodotto con se stesso, quindi immuni al cambio di composizione. In cambio danno la variazione, non il prezzo in euro.
+
+Sono due strumenti con due mestieri: i **livelli** dicono quanto si paga qui e ora, gli **indici** come si muove nel tempo.
+
+### Perché allora esistono
+
+Questi livelli sono un sottoprodotto pubblicato dell'indagine Istat sui prezzi al consumo: gli stessi dati che alimentano gli indici, diffusi anche in forma grezza per trasparenza. Servono inoltre alla sorveglianza dei prezzi — individuare situazioni anomale, alimentare il lavoro del Garante e delle commissioni di allerta rapida — dove basta un ordine di grandezza pubblico e verificabile.
+
+### In breve
+
+| Analisi | Regge? |
+|---|---|
+| Dispersione min-max in una provincia e un mese | sì |
+| Confronto fra province sui carburanti | sì |
+| Ortofrutta all'ingrosso fra mercati | sì, i descrittori sono espliciti |
+| Copertura: dove e quando un prodotto è rilevato | sì |
+| Classifica delle città sul costo degli alimentari | no |
+| Serie storica di un prodotto | no, usa gli indici Istat |
+
+## Altre due cose da sapere
+
+**Le assenze significano «non rilevato».** Se un prodotto non compare per una provincia non vuol dire che lì non si venda: quel mese non è stato rilevato. A Roma i prodotti ittici sono sette, ad Aosta quattro. Negli archivi queste situazioni sono registrate nel manifest, non nascoste.
 
 **Il dettaglio è provinciale, non comunale.** Le province coperte sono 64 delle 107 italiane.
 
