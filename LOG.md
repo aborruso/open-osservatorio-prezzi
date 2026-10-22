@@ -2,6 +2,7 @@
 
 ## 2026-10-22
 
+- Primo giro della CI rosso su un test già esistente: su GitHub Actions Rich forza i colori e i codici ANSI spezzavano le frasi dell'help. Il test ora li toglie; nessun cambio al pacchetto, quindi nessuna nuova versione.
 - Chiusi gli altri punti della review di `v0.4.0...HEAD`: il piano di `archive` dichiara le richieste di preparazione (`preparation_requests`), perché a cache vuota il dry-run interroga il portale per catalogo e domini; documentazione allineata al codice su codici di provincia, `--product` parziale solo senza categoria, catalogo osservato sull'ultimo periodo a Roma.
 - Scoperto che la 0.4.1 non è su PyPI (ultima 0.4.0): finora il rilascio non aveva una procedura scritta. Adottata la procedura di opensdmx: `docs/release.md` con la lista di controllo (PyPI e verifica con `uvx` compresi) e CI con `pytest` su GitHub Actions. Versione 0.4.2, prima pubblicata su PyPI dopo la 0.4.0.
 - Corretto `archive --product` sull'ortofrutta: confrontava `product` invece di `species`, quindi ogni richiesta finiva `no_match`. Emerso da una review di `v0.4.0...HEAD`; test di regressione in `tests/test_archive.py`. Versione 0.4.1.
