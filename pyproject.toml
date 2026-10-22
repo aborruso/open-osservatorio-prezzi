@@ -1,6 +1,6 @@
 [project]
 name = "openosservaprezzi"
-version = "0.4.3"
+version = "0.5.0"
 description = "CLI read-only per i dati pubblici dell'Osservatorio Prezzi"
 readme = "README.md"
 license = { text = "MIT" }
