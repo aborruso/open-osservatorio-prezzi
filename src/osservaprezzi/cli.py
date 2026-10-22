@@ -631,9 +631,9 @@ def archive(
     \b
     Esempi (piano, esecuzione, ripresa):
       osservaprezzi archive consumo --year 2025 --month 5
-        --category altri_alim --all province --dry-run
+        --all province --product "pane fresco" --dry-run
       osservaprezzi archive consumo --year 2025 --month 5
-        --category altri_alim --all province --output archivio
+        --all province --product "pane fresco" --output archivio
       osservaprezzi archive ortofrutta-it --year 2025 --month 5 --week 2
         --group ORTAGGI --all market --output archivio --resume
 
@@ -855,7 +855,7 @@ def agent_context(
                 "purpose": "espande dimensioni e produce dati più manifest",
                 "example": (
                     "osservaprezzi archive consumo --year 2025 --month 5 "
-                    "--category altri_alim --all province --dry-run --agent"
+                    "--all province --product \"pane fresco\" --dry-run --agent"
                 ),
             },
         ],

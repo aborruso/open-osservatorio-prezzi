@@ -192,7 +192,7 @@ osservaprezzi get consumo --year 2025 --month 5 --province 082   --category itti
 osservaprezzi get consumo --year 2025 --month 5 --province PA    --category ittici
 ```
 
-Tutti e tre chiedono Palermo. Sono ammessi il nome del portale, il codice provincia (con o senza zero iniziale), quello dell'unità territoriale, il NUTS3, la sigla automobilistica e la denominazione ufficiale ISTAT (`Valle d'Aosta/Vallée d'Aoste` vale `Aosta`) — anche nelle query YAML e negli archivi. Un codice che non corrisponde a nessuna provincia rilevata è un errore esplicito, non una richiesta a vuoto verso il portale.
+Tutti e tre chiedono Palermo. Sono ammessi il nome del portale (`Palermo`), il codice provincia con o senza zero iniziale (`082` o `82`), quello dell'unità territoriale (`282`), il NUTS3 (`ITG12`), la sigla automobilistica (`PA`) e la denominazione ufficiale ISTAT (`Valle d'Aosta/Vallée d'Aoste` vale `Aosta`) — anche nelle query YAML e negli archivi. Un codice che non corrisponde a nessuna provincia rilevata è un errore esplicito, non una richiesta a vuoto verso il portale.
 
 ## Il pane in tutta Italia: gli archivi
 

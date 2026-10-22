@@ -2,6 +2,13 @@
 
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/); le versioni seguono il [versionamento semantico](https://semver.org/lang/it/).
 
+## [0.4.3] — 2026-10-22
+
+### Corretto
+
+- Gli esempi nell'help di `archive` e in `agent-context` usano la forma `--product "pane fresco"`, senza categoria, invece di insegnare quella che non serve più.
+- Documentazione: un solo elenco dei codici accettati da `--province`, con la stessa formulazione in README, SKILL.md e `references/comandi.md`; la risoluzione automatica della categoria è spiegata in un solo punto della skill.
+
 ## [0.4.2] — 2026-10-22
 
 ### Aggiunto

@@ -88,7 +88,7 @@ Filtri per collezione:
 | `ortofrutta-it` | `--year --month --week --market --group` |
 | `ortofrutta-eu` | `--year --month --week --market --group` |
 
-`--province` accetta il nome del portale, il codice provincia con o senza zero iniziale (`058` o `58`), quello dell'unità territoriale (`258`), il NUTS3 (`ITI43`), la sigla (`RM`) o la denominazione ufficiale ISTAT. Vale anche nelle query YAML e negli archivi.
+`--province` accetta il nome del portale (`Palermo`), il codice provincia con o senza zero iniziale (`082` o `82`), quello dell'unità territoriale (`282`), il NUTS3 (`ITG12`), la sigla automobilistica (`PA`) e la denominazione ufficiale ISTAT (`Valle d'Aosta/Vallée d'Aoste` vale `Aosta`). Vale anche nelle query YAML e negli archivi.
 
 Passare un'opzione estranea alla collezione (per esempio `--market` su `consumo`) è un errore con uscita 2, non viene ignorata.
 
