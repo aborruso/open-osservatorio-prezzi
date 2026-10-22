@@ -1,5 +1,11 @@
 # Log
 
+## 2026-10-22
+
+- Corretto `archive --product` sull'ortofrutta: confrontava `product` invece di `species`, quindi ogni richiesta finiva `no_match`. Emerso da una review di `v0.4.0...HEAD`; test di regressione in `tests/test_archive.py`. Versione 0.4.1.
+- Documentazione: «Quattro regole» in SKILL.md (erano quattro, il testo diceva tre); nel README il catalogo costa una richiesta per categoria più una.
+- Verifica dal vivo della CLI (84 richieste, nessun errore) su un confronto ortofrutta 2026 sul 2025. Nota per l'alternativa con gli indici: il server SDMX di ISTAT non ha risposto; l'IPCA Italia da Eurostat sta ora in `prc_hicp_minr` (COICOP 2018, dimensione `coicop18`), mentre `prc_hicp_manr` si ferma a dicembre 2025.
+
 ## 2026-08-18
 
 - Aggiunto `find`: cerca un prodotto e dice in quale categoria si trova, risolvendo l'unico punto in cui restava da indovinare. `--product` completa da solo la categoria quando la corrispondenza è unica, come già previsto da RF-20. Catalogo osservato in una cella di riferimento, in cache. Versione 0.4.0.

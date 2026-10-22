@@ -94,7 +94,7 @@ osservaprezzi get consumo --year 2025 --month 5 \
   --province Roma --category ittici --agent            # i dati
 ```
 
-Tre regole che evitano quasi tutti gli errori:
+Quattro regole che evitano quasi tutti gli errori:
 
 1. **I domini dipendenti richiedono i genitori.** I mesi dipendono dall'anno, le settimane da anno e mese. `values ortofrutta-it week` senza `--year` e `--month` è un errore, non un default: gennaio 2021 ha cinque settimane, maggio 2025 quattro.
 2. **`get` vuole tutti i filtri della collezione.** Non esistono valori impliciti; per usare quelli del portale serve `--latest`, che li dichiara nel campo `defaults_used` di ogni record.

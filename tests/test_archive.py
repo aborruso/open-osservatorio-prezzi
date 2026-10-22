@@ -207,3 +207,36 @@ def test_il_manifest_registra_l_espansione_temporale(client, tmp_path):
     registrato = result.manifest["temporal_expansion"]
     assert registrato["periods"] == len(plan.expanded["month"])
     assert "indici" in registrato["use_instead"]["source"].lower()
+
+
+def test_filtro_prodotto_ortofrutta_usa_la_specie(tmp_path):
+    # Nell'ortofrutta il catalogo indicizza la specie: il filtro locale deve
+    # confrontare quel campo, non `product`, che in questi record non esiste.
+    from osservaprezzi.archive import Plan
+    from osservaprezzi.client import QueryResult
+    from osservaprezzi.collections import ORTOFRUTTA_IT
+
+    class ClientFinto:
+        def get(self, collection, filters):
+            return QueryResult(
+                collection=collection.id,
+                filters=filters,
+                records=[
+                    {**filters, "species": "POMODORI", "variety": "DATTERINI", "price_prevalent": 7.0},
+                    {**filters, "species": "ZUCCHINE", "variety": "SCURE LUNGHE", "price_prevalent": 1.8},
+                ],
+                source_url="https://example.invalid",
+                retrieved_at="2026-10-22T00:00:00Z",
+            )
+
+    combo = {"year": "2026", "month": "9", "week": "2", "market": "ROMA", "group": "ORTAGGI"}
+    plan = Plan(
+        collection=ORTOFRUTTA_IT.id,
+        filters=combo,
+        expanded={},
+        combinations=[combo],
+        product="Pomodori",
+    )
+    result = run_archive(ClientFinto(), ORTOFRUTTA_IT, plan, tmp_path / "pomodori")
+    assert result.row_count == 1
+    assert result.manifest["results"][0]["status"] == "ok"

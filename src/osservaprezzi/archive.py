@@ -293,6 +293,9 @@ def run_archive(
     _write_manifest(manifest_path, manifest)
 
     target = normalize_product(plan.product) if plan.product else None
+    # Il campo confrontato è quello che il catalogo indicizza: `product` per
+    # consumo, `species` per l'ortofrutta.
+    product_field = collection.catalog.field if collection.catalog else "product"
     failed = 0
 
     for combo in plan.combinations:
@@ -307,7 +310,7 @@ def run_archive(
                 rows = [
                     r
                     for r in rows
-                    if normalize_product(str(r.get("product", ""))) == target
+                    if normalize_product(str(r.get(product_field, ""))) == target
                 ]
             added = 0
             for record in rows:

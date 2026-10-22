@@ -221,7 +221,7 @@ richieste previste: 64
 dimensioni espanse: province (64)
 ```
 
-Il piano in sé non interroga il portale; se però hai usato `--product` e il catalogo non è ancora in cache, viene costruito ora — sono le stesse richieste che farebbe `find`, una per categoria.
+Il piano in sé non interroga il portale; se però hai usato `--product` e il catalogo non è ancora in cache, viene costruito ora — sono le stesse richieste che farebbe `find`, una per categoria più una per leggere il periodo più recente.
 
 Al termine trovi due file:
 

@@ -2,6 +2,12 @@
 
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/); le versioni seguono il [versionamento semantico](https://semver.org/lang/it/).
 
+## [0.4.1] — 2026-10-22
+
+### Corretto
+
+- `archive --product` sulle collezioni ortofrutticole scartava tutte le righe: il filtro locale confrontava il campo `product`, che lì non esiste. Ora confronta il campo indicizzato dal catalogo della collezione (`species` per l'ortofrutta).
+
 ## [0.4.0] — 2026-08-18
 
 ### Aggiunto
