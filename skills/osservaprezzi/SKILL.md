@@ -134,7 +134,7 @@ osservaprezzi archive consumo --year 2025 --month 5 \
 
 Il piano dichiara anche le richieste già spese per prepararlo (`preparation_requests`: catalogo e valori da espandere, quando non sono in cache). `--max-requests` non le conta: limita solo quelle dell'archivio.
 
-Produce `data.csv` e `manifest.json` con copertura, URL, esiti per singola richiesta e chiave di deduplicazione. Un'esecuzione interrotta si riprende con `--resume`, che ripete solo ciò che manca.
+Produce `data.csv` e `manifest.json` con copertura, URL, esiti per singola richiesta e chiave di deduplicazione. Un'esecuzione interrotta si riprende con `--resume`, che ripete solo ciò che manca. Prima di usare i dati guarda `requests.no_data` e `requests.no_match` nel sommario: `complete` vuol dire che nessuna richiesta è fallita, non che tutte abbiano restituito righe.
 
 Se la richiesta riguarda un **andamento nel tempo**, non espandere i mesi con `--all month`: quella serie mescolerebbe il rincaro reale con il cambio del paniere campionato. La CLI stessa lo segnala su `stderr` e propone il comando `opensdmx` equivalente; segui quella strada invece di produrre comunque il grafico. Espandere il tempo resta legittimo per altri scopi — verificare in quali mesi un prodotto è stato rilevato, misurare la copertura — purché il risultato non venga presentato come una serie storica.
 

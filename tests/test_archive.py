@@ -101,7 +101,13 @@ def test_archivio_completo_con_manifest(client, tmp_path):
 
     manifest = json.loads((tmp_path / "archivio" / "manifest.json").read_text("utf-8"))
     assert manifest["status"] == "complete"
-    assert manifest["requests"] == {"planned": 3, "completed": 3, "failed": 0}
+    assert manifest["requests"] == {
+        "planned": 3,
+        "completed": 3,
+        "failed": 0,
+        "no_data": 1,
+        "no_match": 0,
+    }
     assert manifest["natural_key"] == list(CONSUMO.natural_key)
     assert manifest["notes"]
     esiti = {r["filters"]["province"]: r["status"] for r in manifest["results"]}
@@ -240,3 +246,62 @@ def test_filtro_prodotto_ortofrutta_usa_la_specie(tmp_path):
     result = run_archive(ClientFinto(), ORTOFRUTTA_IT, plan, tmp_path / "pomodori")
     assert result.row_count == 1
     assert result.manifest["results"][0]["status"] == "ok"
+
+
+def _cli_con_pagina_di_prova(monkeypatch, tmp_path):
+    from osservaprezzi import cli as cli_module
+    from osservaprezzi.cache import MetadataCache
+    from osservaprezzi.client import Client
+    from osservaprezzi.http import Fetcher
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, text=pagina(dict(request.url.params)))
+
+    def fabbrica(timeout, retries, pause, refresh, verbose, lock_timeout=0):
+        fetcher = Fetcher(client=httpx.Client(transport=httpx.MockTransport(handler)))
+        cache = MetadataCache(tmp_path / "cache")
+        return Client(fetcher, cache, refresh=refresh), cache, fetcher
+
+    monkeypatch.setattr(cli_module, "_make_client", fabbrica)
+    return cli_module
+
+
+ARCHIVIO = [
+    "archive",
+    "consumo",
+    "--year",
+    "2025",
+    "--month",
+    "5",
+    "--category",
+    "altri_alim",
+    "--all",
+    "province",
+]
+
+
+def test_sommario_conta_le_richieste_senza_righe(monkeypatch, tmp_path):
+    """Un archivio completo può essere fatto di celle vuote: il sommario lo dice."""
+    from typer.testing import CliRunner
+
+    cli_module = _cli_con_pagina_di_prova(monkeypatch, tmp_path)
+    result = CliRunner().invoke(
+        cli_module.app, ARCHIVIO + ["--output", str(tmp_path / "a"), "--json"]
+    )
+    assert result.exit_code == 0
+    sommario = json.loads(result.stdout)
+    assert sommario["status"] == "complete"
+    assert sommario["requests"]["no_data"] == 1
+    assert sommario["requests"]["no_match"] == 0
+    # In modalità JSON il conteggio sta nel sommario, non in una riga di testo.
+    assert "richieste senza righe" not in result.stderr
+
+
+def test_testo_avvisa_su_stderr_delle_richieste_senza_righe(monkeypatch, tmp_path):
+    from typer.testing import CliRunner
+
+    cli_module = _cli_con_pagina_di_prova(monkeypatch, tmp_path)
+    result = CliRunner().invoke(cli_module.app, ARCHIVIO + ["--output", str(tmp_path / "a")])
+    assert result.exit_code == 0
+    assert "richieste senza righe: 1 su 3 (no_data 1, no_match 0)" in result.stderr
+    assert "richieste senza righe" not in result.stdout

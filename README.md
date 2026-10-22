@@ -229,7 +229,7 @@ Il catalogo è osservato sull'ultimo periodo pubblicato, in una provincia di rif
 Al termine trovi due file:
 
 - **`data.csv`** — i dati, senza duplicati;
-- **`manifest.json`** — cosa è stato chiesto, a quale indirizzo, quando, quali province hanno risposto e quali no.
+- **`manifest.json`** — cosa è stato chiesto, a quale indirizzo, quando, quali province hanno risposto e quali no. Il conteggio delle richieste distingue quelle senza righe (`no_data`, `no_match`), e a fine esecuzione la CLI le segnala su `stderr`: un archivio `complete` può essere fatto quasi solo di celle vuote.
 
 Nell'esempio reale: 64 province interrogate, 60 con quel pane, 4 dove non è stato rilevato. Il prezzo medio andava da 2,42 a 7,04 euro al chilo.
 

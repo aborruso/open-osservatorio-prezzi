@@ -283,6 +283,8 @@ def run_archive(
             "planned": plan.request_count,
             "completed": len(done),
             "failed": 0,
+            "no_data": 0,
+            "no_match": 0,
         },
         "row_count": len(records),
         "results": list(done.values()),
@@ -290,6 +292,7 @@ def run_archive(
         "temporal_expansion": temporal_expansion(collection, plan),
         "source": collection.url,
     }
+    _conta_esiti(manifest)
     _write_manifest(manifest_path, manifest)
 
     target = normalize_product(plan.product) if plan.product else None
@@ -340,9 +343,7 @@ def run_archive(
                 print(f"richiesta fallita: {combo_id}: {exc.message}", file=sys.stderr)
 
         manifest["results"].append(entry)
-        manifest["requests"]["completed"] = sum(
-            1 for e in manifest["results"] if e["status"] != "failed"
-        )
+        _conta_esiti(manifest)
         manifest["requests"]["failed"] = failed
         manifest["row_count"] = len(records)
         _write_data(directory, data_format, records, columns)
@@ -366,6 +367,17 @@ def run_archive(
         completed=manifest["requests"]["completed"],
         failed=failed,
         manifest=manifest,
+    )
+
+
+def _conta_esiti(manifest: dict[str, Any]) -> None:
+    # Le richieste senza righe sono completate, ma vanno contate a parte: un
+    # archivio fatto di celle vuote non deve sembrare pieno dal solo riepilogo.
+    esiti = [e["status"] for e in manifest["results"]]
+    manifest["requests"].update(
+        completed=sum(1 for s in esiti if s != "failed"),
+        no_data=esiti.count("no_data"),
+        no_match=esiti.count("no_match"),
     )
 
 

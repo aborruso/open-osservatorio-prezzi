@@ -2,6 +2,12 @@
 
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/); le versioni seguono il [versionamento semantico](https://semver.org/lang/it/).
 
+## [Non rilasciato]
+
+### Aggiunto
+
+- `archive` conta a parte le richieste senza righe: `requests.no_data` e `requests.no_match` nel manifest e nel sommario JSON, e in modalità testo una riga su `stderr` (`richieste senza righe: 8 su 9 …`). Prima un archivio di celle vuote risultava `complete` con `completed` pari alle richieste pianificate, e il buco si vedeva solo aprendo il manifest.
+
 ## [0.4.3] — 2026-10-22
 
 ### Corretto

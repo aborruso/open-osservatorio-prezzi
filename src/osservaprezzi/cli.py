@@ -747,6 +747,15 @@ def archive(
             f"archivio {result.status}: {result.row_count} righe in {result.directory}\n",
             output=None,
         )
+        richieste = result.manifest["requests"]
+        vuote = richieste["no_data"] + richieste["no_match"]
+        if vuote:
+            print(
+                f"richieste senza righe: {vuote} su {richieste['planned']} "
+                f"(no_data {richieste['no_data']}, no_match {richieste['no_match']}), "
+                "dettaglio in manifest.json",
+                file=sys.stderr,
+            )
     if result.status == "partial":
         raise typer.Exit(err.EXIT_PARTIAL_RESPONSE)
 

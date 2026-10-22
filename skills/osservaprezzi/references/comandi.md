@@ -162,7 +162,7 @@ Opzioni specifiche:
 Contenuto della directory:
 
 - `data.csv` (o `data.jsonl`) — righe deduplicate per chiave naturale;
-- `manifest.json` — query, valori espansi, URL sorgente, istanti, conteggi, esito di ogni richiesta (`ok`, `no_data`, `no_match`, `failed`), chiave usata e avvertenze del portale.
+- `manifest.json` — query, valori espansi, URL sorgente, istanti, conteggi, esito di ogni richiesta (`ok`, `no_data`, `no_match`, `failed`), chiave usata e avvertenze del portale. In `requests`, `completed` comprende le richieste senza righe, contate anche a parte in `no_data` e `no_match`; lo stesso blocco è nel sommario JSON, e in modalità testo la CLI le riepiloga su `stderr`.
 
 Quando l'espansione riguarda `year` o `month` su `consumo`, il piano stampa su `stderr` un avvertimento sulla non comparabilità temporale e il comando `opensdmx` che risponde davvero alla domanda; la stessa informazione finisce nel manifest sotto `temporal_expansion` e nel sommario JSON. Non è un blocco: è il contesto necessario a decidere.
 
