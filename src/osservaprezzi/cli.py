@@ -603,7 +603,14 @@ def archive(
     ),
     output: Optional[Path] = typer.Option(None, "--output", help="Directory dell'archivio."),
     data_format: str = typer.Option("csv", "--format", help="csv oppure jsonl."),
-    max_requests: int = typer.Option(DEFAULT_MAX_REQUESTS, "--max-requests"),
+    max_requests: int = typer.Option(
+        DEFAULT_MAX_REQUESTS,
+        "--max-requests",
+        help=(
+            "Limite sulle richieste dell'archivio. Quelle per preparare il piano "
+            "(catalogo, domini) non sono contate: il piano le dichiara."
+        ),
+    ),
     pause: float = typer.Option(DEFAULT_PAUSE, "--pause", help="Pausa fra richieste, in secondi."),
     dry_run: bool = typer.Option(False, "--dry-run", help="Mostra il piano senza eseguirlo."),
     resume: bool = typer.Option(False, "--resume", help="Ripete solo le richieste mancanti o fallite."),
@@ -663,6 +670,9 @@ def archive(
 
         plan = build_plan(client, collection, filters, list(all_dimensions), risolto)
         cache.flush()
+        # Catalogo e domini delle dimensioni espanse costano richieste prima
+        # ancora dell'archivio, quando non sono in cache: vanno dichiarate.
+        preparazione = fetcher.requests_made
 
         if plan.request_count > max_requests:
             raise err.InvalidParameter(
@@ -688,6 +698,7 @@ def archive(
                 "notes": list(collection.notes),
                 "temporal_expansion": avviso,
                 "resolved_from_catalog": catalogo_usato,
+                "preparation_requests": preparazione,
             }
             if json_output:
                 render.write(render.to_json(payload), output=None)
@@ -695,7 +706,8 @@ def archive(
                 render.write(
                     f"richieste previste: {plan.request_count}\n"
                     f"dimensioni espanse: "
-                    f"{', '.join(f'{k} ({len(v)})' for k, v in plan.expanded.items()) or 'nessuna'}\n",
+                    f"{', '.join(f'{k} ({len(v)})' for k, v in plan.expanded.items()) or 'nessuna'}\n"
+                    f"richieste già fatte per preparare il piano: {preparazione}\n",
                     output=None,
                 )
             return

@@ -88,7 +88,7 @@ Filtri per collezione:
 | `ortofrutta-it` | `--year --month --week --market --group` |
 | `ortofrutta-eu` | `--year --month --week --market --group` |
 
-`--province` accetta il nome del portale, il codice provincia (`058`), quello dell'unità territoriale (`258`), il NUTS3 (`ITI43`), la sigla (`RM`) o la denominazione ufficiale ISTAT. Vale anche nelle query YAML e negli archivi.
+`--province` accetta il nome del portale, il codice provincia con o senza zero iniziale (`058` o `58`), quello dell'unità territoriale (`258`), il NUTS3 (`ITI43`), la sigla (`RM`) o la denominazione ufficiale ISTAT. Vale anche nelle query YAML e negli archivi.
 
 Passare un'opzione estranea alla collezione (per esempio `--market` su `consumo`) è un errore con uscita 2, non viene ignorata.
 
@@ -133,18 +133,17 @@ osservaprezzi run ortaggi-roma.yaml --output ortaggi.csv
 ## Archivi
 
 ```bash
-# 1. il piano, senza toccare i dati
-osservaprezzi archive consumo --year 2025 --month 5 --category altri_alim \
-  --all province --dry-run --agent
+# 1. il piano, senza scaricare i dati
+osservaprezzi archive consumo --year 2025 --month 5 \
+  --all province --product "pane fresco" --dry-run --agent
 
 # 2. l'esecuzione
-osservaprezzi archive consumo --year 2025 --month 5 --category altri_alim \
-  --all province --product "Pane Fresco Con Farina Di Grano (1000 Gr)" \
-  --output pane-2025-05
+osservaprezzi archive consumo --year 2025 --month 5 \
+  --all province --product "pane fresco" --output pane-2025-05
 
-# 3. la ripresa, se si è interrotta
-osservaprezzi archive consumo --year 2025 --month 5 --category altri_alim \
-  --all province --output pane-2025-05 --resume
+# 3. la ripresa, se si è interrotta: stesso comando più --resume
+osservaprezzi archive consumo --year 2025 --month 5 \
+  --all province --product "pane fresco" --output pane-2025-05 --resume
 ```
 
 Opzioni specifiche:
@@ -152,10 +151,10 @@ Opzioni specifiche:
 | Opzione | Effetto |
 |---|---|
 | `--all <dimensione>` | espande su tutti i valori; ripetibile |
-| `--product <testo>` | filtro locale; accetta parte del nome e risolve la categoria se univoco |
+| `--product <testo>` | filtro locale (prodotto per `consumo`, specie per l'ortofrutta); senza `--category`/`--group` accetta parte del nome e risolve la categoria se univoco, altrimenti vuole la descrizione completa |
 | `--output <dir>` | directory dell'archivio, obbligatoria per eseguire |
 | `--format csv\|jsonl` | formato del file dati |
-| `--max-requests <n>` | limite rigido, default 100: il piano che lo supera non parte |
+| `--max-requests <n>` | limite rigido sulle richieste dell'archivio, default 100: il piano che lo supera non parte. Le richieste per preparare il piano (catalogo, valori da espandere) non sono contate: il piano le dichiara in `preparation_requests` |
 | `--pause <secondi>` | attesa fra richieste, si somma al minimo di sistema |
 | `--dry-run` | mostra il piano e termina |
 | `--resume` | ripete solo le richieste mancanti o fallite |

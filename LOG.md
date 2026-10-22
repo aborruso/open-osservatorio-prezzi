@@ -2,6 +2,8 @@
 
 ## 2026-10-22
 
+- Chiusi gli altri punti della review di `v0.4.0...HEAD`: il piano di `archive` dichiara le richieste di preparazione (`preparation_requests`), perché a cache vuota il dry-run interroga il portale per catalogo e domini; documentazione allineata al codice su codici di provincia, `--product` parziale solo senza categoria, catalogo osservato sull'ultimo periodo a Roma.
+- Scoperto che la 0.4.1 non è su PyPI (ultima 0.4.0): finora il rilascio non aveva una procedura scritta. Adottata la procedura di opensdmx: `docs/release.md` con la lista di controllo (PyPI e verifica con `uvx` compresi) e CI con `pytest` su GitHub Actions. Versione 0.4.2, prima pubblicata su PyPI dopo la 0.4.0.
 - Corretto `archive --product` sull'ortofrutta: confrontava `product` invece di `species`, quindi ogni richiesta finiva `no_match`. Emerso da una review di `v0.4.0...HEAD`; test di regressione in `tests/test_archive.py`. Versione 0.4.1.
 - Documentazione: «Quattro regole» in SKILL.md (erano quattro, il testo diceva tre); nel README il catalogo costa una richiesta per categoria più una.
 - Verifica dal vivo della CLI (84 richieste, nessun errore) su un confronto ortofrutta 2026 sul 2025. Nota per l'alternativa con gli indici: il server SDMX di ISTAT non ha risposto; l'IPCA Italia da Eurostat sta ora in `prc_hicp_minr` (COICOP 2018, dimensione `coicop18`), mentre `prc_hicp_manr` si ferma a dicembre 2025.

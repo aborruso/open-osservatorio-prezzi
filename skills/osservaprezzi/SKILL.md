@@ -65,7 +65,7 @@ Copertura dal 2021. Le categorie di `consumo` sono sei: `altri_alim` (alimentari
 
 Ogni riga porta con sé tre codifiche territoriali che il portale non espone, aggiunte dalla CLI: `province_istat` (codice provincia classico, Roma `058`), `province_uts` (unità territoriale sovracomunale, che per le quindici città metropolitane è diverso — Roma `258`) e `province_nuts3` (`ITI43`).
 
-Funziona anche al contrario: `--province` accetta il codice al posto del nome, quindi `082`, `ITG12`, `PA` e `Palermo` chiedono la stessa provincia. Se l'utente ti dà un codice, passalo direttamente invece di convertirlo a mano.
+Funziona anche al contrario: `--province` accetta il codice al posto del nome (l'elenco completo è nella regola 4 più sotto).
 
 Servono per unire questi prezzi ad altre fonti — popolazione, redditi, confini, dataflow SDMX — senza costruire a mano una tabella di conversione. Quando riporti un join, usa il codice giusto per la fonte di destinazione: se una provincia grande risulta senza corrispondenza, quasi sempre è perché stai usando l'una al posto dell'altra. Per i mercati ortofrutticoli questi campi non esistono, perché un mercato non è un'unità amministrativa e nessun codice viene inventato.
 
@@ -77,9 +77,9 @@ Il portale non espone il prodotto come filtro: sta dentro una categoria, e indov
 osservaprezzi find consumo salmone --agent
 ```
 
-Restituisce prodotto, categoria e il contesto in cui la lista è stata osservata (`observed_with`). Negli archivi puoi anche saltare il passaggio: `--product "pane fresco"` completa la categoria da solo quando la corrispondenza è unica, e quando è ambigua l'errore elenca le possibilità — riportale all'utente invece di sceglierne una.
+Restituisce prodotto, categoria e il contesto in cui la lista è stata osservata (`observed_with`). Negli archivi puoi anche saltare il passaggio: senza `--category`, `--product "pane fresco"` ricava la categoria dal catalogo quando la corrispondenza è unica, e quando è ambigua l'errore elenca le possibilità — riportale all'utente invece di sceglierne una.
 
-Ricorda che quell'elenco è osservato in una cella di riferimento: un prodotto assente lì può esistere altrove, e viceversa.
+Ricorda che quell'elenco è osservato in una cella di riferimento (l'ultimo periodo pubblicato, a Roma per `consumo`): un prodotto assente lì può esistere altrove o in un altro mese, e viceversa.
 
 ## Il percorso: scoprire prima di chiedere
 
@@ -98,8 +98,8 @@ Quattro regole che evitano quasi tutti gli errori:
 
 1. **I domini dipendenti richiedono i genitori.** I mesi dipendono dall'anno, le settimane da anno e mese. `values ortofrutta-it week` senza `--year` e `--month` è un errore, non un default: gennaio 2021 ha cinque settimane, maggio 2025 quattro.
 2. **`get` vuole tutti i filtri della collezione.** Non esistono valori impliciti; per usare quelli del portale serve `--latest`, che li dichiara nel campo `defaults_used` di ogni record.
-3. **Non inventare valori.** I nomi di province e mercati vanno presi da `values`. Se sbagli, l'errore ti restituisce la lista giusta — ma è una richiesta sprecata verso un servizio pubblico.
-4. **La provincia si indica anche per codice.** `--province` accetta il nome (`Palermo`), il codice ISTAT (`082`), quello dell'unità territoriale (`282`), il NUTS3 (`ITG12`) e la sigla (`PA`): se l'utente o il dataset di partenza ti danno un codice, passalo così com'è invece di convertirlo a mano. Vale anche nelle query YAML e negli archivi. I mercati ortofrutticoli, invece, non hanno codici: lì serve il nome esatto.
+3. **Non inventare valori.** I nomi di province e mercati vanno presi da `values` (per le province valgono anche i codici della regola 4); i prodotti da `find`, oppure da `--product` con una parte del nome, che li risolve sul catalogo. Se sbagli, l'errore ti restituisce la lista giusta — ma è una richiesta sprecata verso un servizio pubblico.
+4. **La provincia si indica anche per codice.** `--province` accetta il nome del portale (`Palermo`), il codice ISTAT con o senza zero iniziale (`082` o `82`), quello dell'unità territoriale (`282`), il NUTS3 (`ITG12`), la sigla (`PA`) e la denominazione ufficiale ISTAT (`Valle d'Aosta/Vallée d'Aoste` vale `Aosta`): se l'utente o il dataset di partenza ti danno un codice, passalo così com'è invece di convertirlo a mano. Vale anche nelle query YAML e negli archivi. I mercati ortofrutticoli, invece, non hanno codici: lì serve il nome esatto.
 
 ## Leggere gli esiti
 
@@ -121,23 +121,24 @@ La distinzione fra 2 e 3 è il cuore dello strumento: `no_data` significa che qu
 Per espandere una dimensione su tutti i suoi valori, chiedi **sempre prima il piano**:
 
 ```bash
-osservaprezzi archive consumo --year 2025 --month 5 --category altri_alim \
-  --all province --dry-run --agent
+osservaprezzi archive consumo --year 2025 --month 5 \
+  --all province --product "pane fresco" --dry-run --agent
 ```
 
 Poi esegui, indicando una directory di uscita:
 
 ```bash
-osservaprezzi archive consumo --year 2025 --month 5 --category altri_alim \
-  --all province --product "Pane Fresco Con Farina Di Grano (1000 Gr)" \
-  --output pane-2025-05
+osservaprezzi archive consumo --year 2025 --month 5 \
+  --all province --product "pane fresco" --output pane-2025-05
 ```
+
+Il piano dichiara anche le richieste già spese per prepararlo (`preparation_requests`: catalogo e valori da espandere, quando non sono in cache). `--max-requests` non le conta: limita solo quelle dell'archivio.
 
 Produce `data.csv` e `manifest.json` con copertura, URL, esiti per singola richiesta e chiave di deduplicazione. Un'esecuzione interrotta si riprende con `--resume`, che ripete solo ciò che manca.
 
 Se la richiesta riguarda un **andamento nel tempo**, non espandere i mesi con `--all month`: quella serie mescolerebbe il rincaro reale con il cambio del paniere campionato. La CLI stessa lo segnala su `stderr` e propone il comando `opensdmx` equivalente; segui quella strada invece di produrre comunque il grafico. Espandere il tempo resta legittimo per altri scopi — verificare in quali mesi un prodotto è stato rilevato, misurare la copertura — purché il risultato non venga presentato come una serie storica.
 
-Nota su `--product`: quel filtro non esiste nel portale, viene applicato localmente. Accetta anche una parte del nome e, quando la corrispondenza è unica, ricava da sé la categoria dal catalogo; se è ambigua l'errore elenca le possibilità. Il confronto sulle righe resta esatto, sulla descrizione canonica risolta. Le province senza corrispondenza finiscono nel manifest come `no_match`: vanno riportate, perché «non rilevato» non è «prezzo zero».
+Nota su `--product`: quel filtro non esiste nel portale, viene applicato localmente, sul prodotto per `consumo` e sulla specie per l'ortofrutta. La parte del nome vale solo senza `--category` (o `--group`): in quel caso, come sopra, la categoria viene dal catalogo. Se la indichi, il testo deve essere la descrizione completa. Il confronto sulle righe resta esatto, sulla descrizione canonica risolta. Le province senza corrispondenza finiscono nel manifest come `no_match`: vanno riportate, perché «non rilevato» non è «prezzo zero».
 
 ## Una richiesta alla volta
 

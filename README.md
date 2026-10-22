@@ -192,7 +192,7 @@ osservaprezzi get consumo --year 2025 --month 5 --province 082   --category itti
 osservaprezzi get consumo --year 2025 --month 5 --province PA    --category ittici
 ```
 
-Tutti e tre chiedono Palermo. Sono ammessi il nome del portale, il codice provincia (con o senza zero iniziale), quello dell'unità territoriale, il NUTS3 e la sigla automobilistica — anche nelle query YAML e negli archivi. Un codice che non corrisponde a nessuna provincia rilevata è un errore esplicito, non una richiesta a vuoto verso il portale.
+Tutti e tre chiedono Palermo. Sono ammessi il nome del portale, il codice provincia (con o senza zero iniziale), quello dell'unità territoriale, il NUTS3, la sigla automobilistica e la denominazione ufficiale ISTAT (`Valle d'Aosta/Vallée d'Aoste` vale `Aosta`) — anche nelle query YAML e negli archivi. Un codice che non corrisponde a nessuna provincia rilevata è un errore esplicito, non una richiesta a vuoto verso il portale.
 
 ## Il pane in tutta Italia: gli archivi
 
@@ -206,7 +206,7 @@ osservaprezzi archive consumo \
   --output pane-maggio-2025
 ```
 
-Non serve più indicare la categoria né la descrizione completa: se il testo corrisponde a un solo prodotto, la CLI lo riconosce e completa il filtro da sola, dicendotelo. Se corrisponde a più prodotti, l'errore li elenca invece di scegliere al posto tuo.
+Non serve più indicare la categoria né la descrizione completa: se il testo corrisponde a un solo prodotto, la CLI lo riconosce e completa il filtro da sola, dicendotelo. Se corrisponde a più prodotti, l'errore li elenca invece di scegliere al posto tuo. La ricerca per parte del nome vale solo quando la categoria non la indichi: con `--category` il testo va confrontato con la descrizione completa.
 
 Prima di partire puoi vedere quanto costerà:
 
@@ -219,9 +219,12 @@ osservaprezzi archive consumo --year 2025 --month 5 \
 prodotto risolto dal catalogo: 'Pane Fresco Con Farina Di Grano (1000 Gr)' in category=altri_alim
 richieste previste: 64
 dimensioni espanse: province (64)
+richieste già fatte per preparare il piano: 0
 ```
 
-Il piano in sé non interroga il portale; se però hai usato `--product` e il catalogo non è ancora in cache, viene costruito ora — sono le stesse richieste che farebbe `find`, una per categoria più una per leggere il periodo più recente.
+La prima riga arriva su `stderr`, il piano su `stdout`. Per prepararlo la CLI può dover chiedere qualcosa al portale: l'elenco dei valori da espandere, se non è in cache, e il catalogo dei prodotti, se hai usato `--product` — le stesse richieste che farebbe `find`, una per categoria più una per leggere il periodo più recente. L'ultima riga dice quante ne sono servite; con la cache già piena sono zero. Non rientrano in `--max-requests`, che limita le richieste dell'archivio vero e proprio.
+
+Il catalogo è osservato sull'ultimo periodo pubblicato, in una provincia di riferimento (Roma), non sul mese che chiedi: un prodotto rilevato solo altrove o solo in passato può non essere trovato, e allora serve indicare categoria e descrizione completa.
 
 Al termine trovi due file:
 

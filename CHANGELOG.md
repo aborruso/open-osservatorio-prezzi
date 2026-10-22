@@ -2,6 +2,16 @@
 
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/); le versioni seguono il [versionamento semantico](https://semver.org/lang/it/).
 
+## [0.4.2] — 2026-10-22
+
+### Aggiunto
+
+- Il piano di `archive` dichiara le richieste già spese per prepararlo (catalogo dei prodotti e valori delle dimensioni da espandere, quando non sono in cache): riga `richieste già fatte per preparare il piano` e campo `preparation_requests` in JSON. `--max-requests` continua a limitare solo le richieste dell'archivio, e il suo `--help` ora lo dice.
+
+### Corretto
+
+- Documentazione: il README affermava che il piano non interroga mai il portale, falso a cache vuota; la ricerca per parte del nome vale solo senza `--category`/`--group`; il catalogo è osservato sull'ultimo periodo nella cella di riferimento; elenco dei codici di `--province` completo e in un solo punto della skill; esempi di archivio con `--product "pane fresco"` e ripresa con lo stesso filtro.
+
 ## [0.4.1] — 2026-10-22
 
 ### Corretto

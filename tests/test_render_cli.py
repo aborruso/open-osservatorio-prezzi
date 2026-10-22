@@ -219,6 +219,15 @@ def test_piano_ispezionabile_senza_eseguirlo():
     assert payload["plan"]["planned_requests"] == 64
     assert payload["plan"]["expanded"]["province"][0] == "Alessandria"
     assert payload["notes"]
+    # A cache vuota il dominio delle province va letto dal portale: il piano
+    # lo dichiara invece di presentarsi come gratuito.
+    assert payload["preparation_requests"] >= 1
+
+
+def test_piano_dichiara_le_richieste_di_preparazione_nel_testo():
+    result = runner.invoke(cli_module.app, ARCHIVIO_CONSUMO + ["--dry-run"])
+    assert result.exit_code == 0
+    assert "richieste già fatte per preparare il piano:" in result.stdout
 
 
 def test_limite_di_richieste_blocca_l_avvio():
