@@ -8,3 +8,4 @@ build/
 *.egg-info/
 .cache/
 dist/
+tasks/todo.md
