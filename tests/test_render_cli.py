@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import re
 
 import pytest
 from typer.testing import CliRunner
@@ -430,8 +431,12 @@ def test_ogni_comando_ha_esempi_nell_help():
 
 
 def _testo_help(result) -> str:
-    """Help senza cornici Rich, per verificare le frasi che vanno a capo."""
-    return " ".join(result.stdout.replace("│", " ").split())
+    """Help senza cornici né colori Rich, per verificare le frasi che vanno a capo.
+
+    Su GitHub Actions Rich forza i colori: i codici ANSI spezzerebbero le frasi.
+    """
+    testo = re.sub(r"\x1b\[[0-9;]*m", "", result.stdout)
+    return " ".join(testo.replace("│", " ").split())
 
 
 def test_le_opzioni_filtro_dichiarano_la_collezione():
